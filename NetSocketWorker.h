@@ -1,0 +1,29 @@
+#ifdef __linux__
+    #include <sys/types.h>
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <netdb.h>
+#elif _WIN32
+	#include <winsock2.h>
+#else
+
+#endif
+
+
+#include <string.h>
+
+class NetSocketWorker: public ISocketWorker{
+private:
+	void GetAddr(sockaddr_in &addr, char *ip, int port);
+public:
+	int GetNewSocketId();
+	
+	int Recieve(int socketId, char* buff, int size);
+	void Send(int socketId, char* buff, int size);
+	
+	
+	bool Bind(int socketId, char *ip, int port);
+	void Listen(int socketId, int count);
+	int Accept(int socketId);
+	int ConnectTo(int socketId, char *ip, int port);
+};

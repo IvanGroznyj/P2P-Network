@@ -1,17 +1,13 @@
 #include "Translator.h"
 
 char* Translator::CommandToText(Command* cmd){
-	//int size = cmd->name.size();
 	string res = cmd->name;
 	for(int i=0; i < cmd->argc; i++){
-		//size+=(cmd->argv)[i].size()+1;
 		res += '|'+(cmd->argv)[i];
 	}
+	res+='\0';
 	char *resc = new char[res.size()+1];
-	//printf("<<>> %s\n",res.c_str());
-	//printf("<<>> %d\n",res.size());
 	strcpy(resc, res.c_str());
-	//printf("<<>> %s\n",resc);
 	return resc;
 }
 

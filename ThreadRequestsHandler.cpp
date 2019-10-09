@@ -7,20 +7,15 @@ Translator tr;
 
 void ThreadAnswer(ISocketWorker *sworker, int sock){
 	char *buf;
-	//char *tmpbuf;
 	int bytes_read;
 	string tmp = "";
 	while(true){
 		buf = new char[1024];
 		bytes_read = sworker->Recieve(sock, buf, 1024);
-		//tmpbuf = new char[bytes_read+1];
-		//strncpy(tmpbuf, buf, bytes_read+1);
 		tmp += buf;
-		//delete[] tmpbuf;
 		delete[] buf;
 		if(bytes_read<1024) break;
 	}
-	//printf(">>> %s\n",tmp.c_str());
 	char *ans = new char[tmp.size()+1];
 	strcpy(ans, tmp.c_str());
 	cmdintr->DoCommand(sock, tr.TextToCommand(ans));

@@ -14,7 +14,7 @@
 		}else
 
 		if(cmd->name == "hi"){
-			StadnartCommandInterpreter::sw->Send(sock, (char*)"\\('')\n", 7);
+			StadnartCommandInterpreter::sw->Send(sock, (char*)"\\('')", 7);
 		}else
 
 		if(cmd->name == "hash"){
@@ -25,7 +25,7 @@
 			strcpy(p, tmp.c_str());
 			StadnartCommandInterpreter::sw->Send(sock, p, sizeof(p));
 		}else
-			StadnartCommandInterpreter::sw->Send(sock,(char*)"Wrong cmd", 9);
+			StadnartCommandInterpreter::sw->Send(sock,(char*)"Wrong cmd", 10);
 
 	}
 

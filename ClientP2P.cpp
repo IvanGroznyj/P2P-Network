@@ -20,12 +20,6 @@ void P2PClient::BindClient(char* ip, int port){
 	P2PClient::port = port;
 }
 
-/*void P2PClient::Build(StandartBuilder *builder){
-	P2PClient::sworker = builder->BuildSocketWorker();
-	P2PClient::handler = builder->BuildRequestsHandler();
-	P2PClient::dworker = builder->BuildDataWorker();
-}*/
-
 void P2PClient::StartListen(){
 	P2PClient::handler->StartWorking(P2PClient::ip, P2PClient::port);
 };
@@ -47,24 +41,17 @@ char* P2PClient::GetAnswer(char *ip, int port, char* msg, int msgsize){
 		perror("connect");
 		exit(2);
 	}
-	//cout<<"<> "<<msg<<endl;
 	P2PClient::sworker->Send(sock, msg, msgsize);
 	string resStr = "";
 	char *buf;
-	//char *tmpbuf;
 	int bytes_read;
 	while(true){
 		buf = new char[1024];
 		bytes_read = P2PClient::sworker->Recieve(sock, buf, 1024);
-		//tmpbuf = new char[bytes_read+1];
-		//strncpy(tmpbuf, buf, bytes_read+1);
 		resStr += buf;
-		//delete[] tmpbuf;
 		delete[] buf;
-		//cout<<">> "<<resStr<<endl;
 		if(bytes_read<1024) break;
 	}
-	//cout<<"> "<<resStr<<endl;
 	buf = new char[resStr.size()+1];
 	strcpy(buf, resStr.c_str());
 	return buf;

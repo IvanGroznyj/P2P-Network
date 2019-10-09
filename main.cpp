@@ -54,12 +54,12 @@ int main(int argc, char* argv[]){
 		cout<<"text: ";
 		cin>>cmd->argv[0];
 		cout<<"Get cmd: "<<cmd->argv[0]<<"; Size: "<<cmd->argv[0].size()<<endl;
-		cout<<"> "<<c->GetAnswer(ipdest, portdest, tr.CommandToText(cmd), cmd->argv[0].size()+cmd->name.size()+1)<<endl;
+		cout<<"> "<<c->GetAnswer(ipdest, portdest, tr.CommandToText(cmd), cmd->argv[0].size()+cmd->name.size()+2)<<endl;
 	}
 
 	// !!! TESTS !!!
 	sleep(2);
-	P2PClientConnectionTest();
+	//P2PClientConnectionTest();
 	//HashSumTest();
 	//TranslatorTest();
 
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]){
 	return 0;
 }
 
-/* !!! TESTS !!!*/
+/* !!! TESTS !!!
   	void P2PClientConnectionTest(){
 	char message[] = "/home/olaf/Documents/University/OS/sem2.cpp";
 	Command *cmd = new Command();
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]){
 	cout<<"Answer: "<< c->GetAnswer(ip, port, tr.CommandToText(cmd), sizeof(message)+(cmd->name).size())<<endl;
 	cout<<"# end of test\n";
 }
-  /*
+
 void HashSumTest(){
 	cout<<"# HashSumTest\n";
 	IDataWorker *dw = builder->BuildDataWorker();

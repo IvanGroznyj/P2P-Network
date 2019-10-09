@@ -51,15 +51,15 @@ char* P2PClient::GetAnswer(char *ip, int port, char* msg, int msgsize){
 	P2PClient::sworker->Send(sock, msg, msgsize);
 	string resStr = "";
 	char *buf;
-	char *tmpbuf;
+	//char *tmpbuf;
 	int bytes_read;
 	while(true){
 		buf = new char[1024];
 		bytes_read = P2PClient::sworker->Recieve(sock, buf, 1024);
-		tmpbuf = new char[bytes_read+1];
-		strncpy(tmpbuf, buf, bytes_read+1);
-		resStr += tmpbuf;
-		delete[] tmpbuf;
+		//tmpbuf = new char[bytes_read+1];
+		//strncpy(tmpbuf, buf, bytes_read+1);
+		resStr += buf;
+		//delete[] tmpbuf;
 		delete[] buf;
 		//cout<<">> "<<resStr<<endl;
 		if(bytes_read<1024) break;

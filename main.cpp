@@ -12,12 +12,14 @@ using namespace std;
 void P2PClientConnectionTest();
 void HashSumTest();
 void TranslatorTest();
+void NewCommandsTest(P2PClient* c);
 
 
 P2PClient *c;
 StandartBuilder *builder;
 char *ip = (char*)"localhost";
 int port = 9091;
+
 
 int main(int argc, char* argv[]){
 	StandartBuilder *builder = new StandartBuilder();
@@ -35,7 +37,10 @@ int main(int argc, char* argv[]){
 	cout<<"start...\n";
 	c->StartListen();
 
+	sleep(2);
+	NewCommandsTest(c);
 
+	Translator tr;
 	string tmp;
 	int portdest;
 	cout<<"Enter ip: ";
@@ -47,18 +52,18 @@ int main(int argc, char* argv[]){
 	Command *cmd = new Command();
 	cmd->argv = new string[1];
 	cmd->argc = 1;
-	Translator tr;
 	while(true){
+
 		cout<<"Cmd: ";
 		cin>>cmd->name;
 		cout<<"text: ";
 		cin>>cmd->argv[0];
 		cout<<"Get cmd: "<<cmd->argv[0]<<"; Size: "<<cmd->argv[0].size()<<endl;
-		cout<<"> "<<c->GetAnswer(ipdest, portdest, tr.CommandToText(cmd), cmd->argv[0].size()+cmd->name.size()+2)<<endl;
+		cout<<"> "<<c->GetAnswer(ipdest, portdest, tr.CommandToText(cmd), cmd->argv[0].size()+cmd->name.size()+1)<<endl;
 	}
 
 	// !!! TESTS !!!
-	sleep(2);
+
 	//P2PClientConnectionTest();
 	//HashSumTest();
 	//TranslatorTest();
@@ -71,7 +76,19 @@ int main(int argc, char* argv[]){
 	return 0;
 }
 
-/* !!! TESTS !!!
+/* !!! TESTS !!!*/
+void NewCommandsTest(P2PClient *c){
+	cout<<"# NewCommandsTest\n";
+	ICommand *cmd = new HashCommand("/home/olaf/Documents/University/OS/sem2.cpp");
+	Translator tr;
+	char *txtcmd = tr.CommandToText(cmd->ToStandartCommand());
+	int len = strlen(txtcmd);
+	cout<<txtcmd<<"; len = "<<len<<endl;
+	cout<<c->GetAnswer(ip, port, txtcmd, len)<<endl;
+	cout<<"# end of test\n";
+}
+
+/*
   	void P2PClientConnectionTest(){
 	char message[] = "/home/olaf/Documents/University/OS/sem2.cpp";
 	Command *cmd = new Command();

@@ -5,7 +5,7 @@ char* Translator::CommandToText(Command* cmd){
 	for(int i=0; i < cmd->argc; i++){
 		res += '|'+(cmd->argv)[i];
 	}
-	res+='\0';
+	//res+='\0';
 	char *resc = new char[res.size()+1];
 	strcpy(resc, res.c_str());
 	return resc;

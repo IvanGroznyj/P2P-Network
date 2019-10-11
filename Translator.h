@@ -1,12 +1,4 @@
-#include <cstring>
-#include <iostream>
-using namespace std;
-
-struct Command{
-	string name;
-	int argc;
-	string* argv;
-};
+#include "Commands.h"
 
 class Translator {
 public:

@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../ClientP2P.cpp \
+../Commands.cpp \
 ../NetSocketWorker.cpp \
 ../StandartBuilder.cpp \
 ../StandartCommandInterpreter.cpp \
@@ -15,6 +16,7 @@ CPP_SRCS += \
 
 OBJS += \
 ./ClientP2P.o \
+./Commands.o \
 ./NetSocketWorker.o \
 ./StandartBuilder.o \
 ./StandartCommandInterpreter.o \
@@ -25,6 +27,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./ClientP2P.d \
+./Commands.d \
 ./NetSocketWorker.d \
 ./StandartBuilder.d \
 ./StandartCommandInterpreter.d \

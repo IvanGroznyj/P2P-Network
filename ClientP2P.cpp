@@ -5,6 +5,7 @@ using namespace std;
 #include <unistd.h>
 #include "MainInterfaces.h"
 #include "ClientP2P.h"
+#include "Commands.h"
 #include <cstring>
 
 P2PClient::P2PClient(){
@@ -35,13 +36,12 @@ char* P2PClient::GetAnswer(char *ip, int port, char* msg, int msgsize){
 		perror("socket");
 		exit(1);
 	}
-
 	if(P2PClient::sworker->ConnectTo(sock, ip, port)<0)
 	{
 		perror("connect");
 		exit(2);
 	}
-	P2PClient::sworker->Send(sock, msg, msgsize);
+	P2PClient::sworker->Send(sock, msg, msgsize+1);
 	string resStr = "";
 	char *buf;
 	int bytes_read;

@@ -79,12 +79,20 @@ int main(int argc, char* argv[]){
 /* !!! TESTS !!!*/
 void NewCommandsTest(P2PClient *c){
 	cout<<"# NewCommandsTest\n";
-	ICommand *cmd = new HiCommand();
+	ICommand *cmd[5];// = new (ICommand*)[4];
+	cmd[0] = new HiCommand();
+	cmd[1] = new EchoCommand("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+	cmd[2] = new EchoCommand("helloworldmyfriends");
+	cmd[3] = new EchoCommand("hi");
+	cmd[4] = new HashCommand("/home/olaf/Documents/University/OS/sem2.cpp");
 	Translator tr;
-	char *txtcmd = tr.CommandToText(cmd->ToStandartCommand());
-	int len = strlen(txtcmd);
-	cout<<txtcmd<<"; len = "<<len<<endl;
-	cout<<c->GetAnswer(ip, port, txtcmd, len)<<endl;
+	for (int i=0; i<5; i++){
+		char *txtcmd = tr.CommandToText(cmd[i]->ToStandartCommand());
+		int len = strlen(txtcmd);
+		cout<<txtcmd<<"; len = "<<len<<endl;
+		cout<<c->GetAnswer(ip, port, txtcmd, len)<<endl;
+	}
+
 	cout<<"# end of test\n";
 }
 

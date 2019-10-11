@@ -2,8 +2,12 @@
 #include <iostream>
 using namespace std;
 
+enum CommandsIndexes{CmdEcho=1, CmdHi ,CmdHash};
+//char* CommandsNames[];
+//int CommandsCount;
+
 struct Command{
-	string name;
+	char name;
 	int argc;
 	string* argv;
 };

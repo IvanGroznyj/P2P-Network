@@ -1,11 +1,14 @@
 #include "Commands.h"
 
+//enum CommandsIndexes{CmdEcho, CmdHi ,CmdHash};
+//char* CommandsNames[]{"echo", "hi", "hash"};
+//int CommandsCount = sizeof(CommandsNames);
 
 HiCommand::HiCommand(){}
 
 Command* HiCommand::ToStandartCommand(){
 	Command* cmd = new Command();
-	cmd->name = "hi";
+	cmd->name = CmdHi;
 	cmd->argc = 0;
 	cmd->argv = nullptr;
 	return cmd;
@@ -17,7 +20,7 @@ EchoCommand::EchoCommand(char* text){
 
 Command* EchoCommand::ToStandartCommand(){
 	Command* cmd = new Command();
-	cmd->name = "echo";
+	cmd->name = CmdEcho;
 	cmd->argc = 1;
 	cmd->argv = new string[1];
 	cmd->argv[0] = EchoCommand::text;
@@ -30,7 +33,7 @@ HashCommand::HashCommand(char* path){
 
 Command* HashCommand::ToStandartCommand(){
 	Command* cmd = new Command();
-	cmd->name = "hash";
+	cmd->name = CmdHash;
 	cmd->argc = 1;
 	cmd->argv = new string[1];
 	cmd->argv[0] = HashCommand::path;

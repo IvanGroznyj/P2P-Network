@@ -59,7 +59,7 @@ int main(int argc, char* argv[]){
 		cout<<"text: ";
 		cin>>cmd->argv[0];
 		cout<<"Get cmd: "<<cmd->argv[0]<<"; Size: "<<cmd->argv[0].size()<<endl;
-		cout<<"> "<<c->GetAnswer(ipdest, portdest, tr.CommandToText(cmd), cmd->argv[0].size()+cmd->name.size()+1)<<endl;
+		cout<<"> "<<c->GetAnswer(ipdest, portdest, tr.CommandToText(cmd), cmd->argv[0].size()+1+1)<<endl;
 	}
 
 	// !!! TESTS !!!
@@ -79,7 +79,7 @@ int main(int argc, char* argv[]){
 /* !!! TESTS !!!*/
 void NewCommandsTest(P2PClient *c){
 	cout<<"# NewCommandsTest\n";
-	ICommand *cmd = new HashCommand("/home/olaf/Documents/University/OS/sem2.cpp");
+	ICommand *cmd = new HiCommand();
 	Translator tr;
 	char *txtcmd = tr.CommandToText(cmd->ToStandartCommand());
 	int len = strlen(txtcmd);

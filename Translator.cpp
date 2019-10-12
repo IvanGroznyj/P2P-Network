@@ -1,4 +1,5 @@
 #include "Translator.h"
+#include <cstring>
 
 char* Translator::CommandToText(Command* cmd){
 	string res = "";

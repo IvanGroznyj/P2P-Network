@@ -1,10 +1,7 @@
-#include <cstring>
 #include <iostream>
 using namespace std;
 
 enum CommandsIndexes{CmdEcho=1, CmdHi ,CmdHash, CmdGetFile};
-//char* CommandsNames[];
-//int CommandsCount;
 
 struct Command{
 	Command();

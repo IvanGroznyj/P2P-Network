@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 #include <map>
 
 class StandartDataWorker: public IDataWorker{

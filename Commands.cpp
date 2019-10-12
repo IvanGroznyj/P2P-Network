@@ -1,9 +1,5 @@
 #include "Commands.h"
 
-//enum CommandsIndexes{CmdEcho, CmdHi ,CmdHash};
-//char* CommandsNames[]{"echo", "hi", "hash"};
-//int CommandsCount = sizeof(CommandsNames);
-
 Command::Command(){
 	Command::argc = 0;
 	Command::name = '\0';

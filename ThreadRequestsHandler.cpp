@@ -1,6 +1,7 @@
 #include "MainInterfaces.h"
 #include "StandartCommandInterpreter.h"
 #include "ThreadRequestsHandler.h"
+#include <cstring>
 
 ICommandInterpreter *cmdintr;
 Translator tr;

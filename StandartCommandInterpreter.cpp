@@ -1,5 +1,6 @@
 #include "MainInterfaces.h"
 #include "StandartCommandInterpreter.h"
+#include <cstring>
 
 	void StadnartCommandInterpreter::SetCommandInterpreter(ISocketWorker *sw, IDataWorker *dw){
 		StadnartCommandInterpreter::sw = sw;

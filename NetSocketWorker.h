@@ -9,9 +9,6 @@
 
 #endif
 
-
-#include <string.h>
-
 class NetSocketWorker: public ISocketWorker{
 private:
 	void GetAddr(sockaddr_in &addr, char *ip, int port);

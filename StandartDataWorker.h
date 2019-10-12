@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <map>
 
 class StandartDataWorker: public IDataWorker{
 private:
@@ -12,10 +13,12 @@ private:
 	    }
 	};
 
+	std::map<std::string, std::string> hashTable;
+
 public:
 	char* GetFile(char* hash);
-
 	unsigned long int GetHash(char* path);
-
 	char* AddFile(char* path);
+
+	void LoadHashTable();
 };

@@ -40,3 +40,16 @@ Command* HashCommand::ToStandartCommand(){
 	return cmd;
 }
 
+GetFileCommand::GetFileCommand(char *hash){
+	GetFileCommand::hash = hash;
+}
+
+Command* GetFileCommand::ToStandartCommand(){
+	Command* cmd = new Command();
+	cmd->name = CmdGetFile;
+	cmd->argc = 1;
+	cmd->argv = new string[1];
+	cmd->argv[0] = GetFileCommand::hash;
+	return cmd;
+}
+

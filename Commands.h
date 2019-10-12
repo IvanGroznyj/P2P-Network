@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-enum CommandsIndexes{CmdEcho=1, CmdHi ,CmdHash};
+enum CommandsIndexes{CmdEcho=1, CmdHi ,CmdHash, CmdGetFile};
 //char* CommandsNames[];
 //int CommandsCount;
 
@@ -33,4 +33,11 @@ struct HashCommand: public ICommand{
 	Command* ToStandartCommand();
 private:
 	string path;
+};
+
+struct GetFileCommand: public ICommand{
+	GetFileCommand(char* hash);
+	Command* ToStandartCommand();
+private:
+	string hash;
 };

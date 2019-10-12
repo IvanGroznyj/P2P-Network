@@ -19,7 +19,7 @@
 			break;
 		}
 		case CmdHash:{
-			char *b  = new char[cmd->argv[0].size()];
+			char *b  = new char[cmd->argv[0].size()+1];
 			strcpy(b, cmd->argv[0].c_str());
 			string tmp = to_string(StadnartCommandInterpreter::dw->GetHash(b));
 			char p[tmp.size()+1];
@@ -27,9 +27,14 @@
 			StadnartCommandInterpreter::sw->Send(sock, p, sizeof(p));
 			break;
 		}
+		case CmdGetFile:{
+			char *file = StadnartCommandInterpreter::dw->GetFile((char*)cmd->argv[0].c_str());
+			int len = strlen(file);
+			StadnartCommandInterpreter::sw->Send(sock, file, len+1);
+			break;
+		}
 		default:
 			StadnartCommandInterpreter::sw->Send(sock,(char*)"Wrong cmd", 10);
-
 		}
 
 		/*if(cmd->name == "echo"){

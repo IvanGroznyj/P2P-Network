@@ -24,7 +24,10 @@ void StandartBuilder::BuildSocketWorker(){
 }
 
 void StandartBuilder::BuildDataWorker(){
-	StandartBuilder::dw = new StandartDataWorker();
+	StandartDataWorker *tmpdw = new StandartDataWorker();
+	tmpdw->LoadHashTable();
+	StandartBuilder::dw = tmpdw;
+
 }
 
 P2PClient* StandartBuilder::GetClient(){

@@ -52,10 +52,11 @@ int main(int argc, char* argv[]){
 	Command *cmd = new Command();
 	cmd->argv = new string[1];
 	cmd->argc = 1;
+	int idcmd;
 	while(true){
-
 		cout<<"Cmd: ";
-		cin>>cmd->name;
+		cin>>idcmd;
+		cmd->name = idcmd;
 		cout<<"text: ";
 		cin>>cmd->argv[0];
 		cout<<"Get cmd: "<<cmd->argv[0]<<"; Size: "<<cmd->argv[0].size()<<endl;
@@ -79,14 +80,16 @@ int main(int argc, char* argv[]){
 /* !!! TESTS !!!*/
 void NewCommandsTest(P2PClient *c){
 	cout<<"# NewCommandsTest\n";
-	ICommand *cmd[5];// = new (ICommand*)[4];
+	int cnt = 6;
+	ICommand *cmd[cnt];// = new (ICommand*)[4];
 	cmd[0] = new HiCommand();
 	cmd[1] = new EchoCommand("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 	cmd[2] = new EchoCommand("helloworldmyfriends");
 	cmd[3] = new EchoCommand("hi");
-	cmd[4] = new HashCommand("/home/olaf/Documents/University/OS/sem2.cpp");
+	cmd[4] = new HashCommand("data/firstfile.txt");
+	cmd[5] = new GetFileCommand("2309636224852936099");
 	Translator tr;
-	for (int i=0; i<5; i++){
+	for (int i=0; i<cnt; i++){
 		char *txtcmd = tr.CommandToText(cmd[i]->ToStandartCommand());
 		int len = strlen(txtcmd);
 		cout<<txtcmd<<"; len = "<<len<<endl;

@@ -14,6 +14,8 @@ public:
 class IDataWorker{
 public:
 	virtual char* GetFile(char* hash)=0;
+	virtual char* GetFileByName(char* name)=0;
+	virtual void AppendToFileByName(char* name, char* text)=0;
 	virtual unsigned long int GetHash(char* path)=0;
 	virtual char* AddFile(char* path)=0;
 };

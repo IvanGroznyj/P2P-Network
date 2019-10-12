@@ -81,7 +81,7 @@ int main(int argc, char* argv[]){
 /* !!! TESTS !!!*/
 void NewCommandsTest(P2PClient *c){
 	cout<<"# NewCommandsTest\n";
-	int cnt = 6;
+	int cnt = 8;
 	Command *cmd[cnt];// = new (ICommand*)[4];
 	cmd[0] = new HiCommand();
 	cmd[1] = new EchoCommand("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
@@ -89,6 +89,8 @@ void NewCommandsTest(P2PClient *c){
 	cmd[3] = new EchoCommand("hi");
 	cmd[4] = new HashCommand("data/firstfile.txt");
 	cmd[5] = new GetFileCommand("2309636224852936099");
+	cmd[6] = new AppendToVirtualFileCommand("virtualdata/test.txt", "New string\n");
+	cmd[7] = new GetVirtualFileCommand("virtualdata/test.txt");
 	Translator tr;
 	for (int i=0; i<cnt; i++){
 		char *txtcmd = tr.CommandToText(cmd[i]);

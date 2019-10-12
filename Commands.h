@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-enum CommandsIndexes{CmdEcho=1, CmdHi ,CmdHash, CmdGetFile};
+enum CommandsIndexes{CmdEcho=1, CmdHi ,CmdHash, CmdGetFile, CmdGetVirtualFile, CmdAppendToVirtualFile};
 
 struct Command{
 	Command();
@@ -26,4 +26,11 @@ struct HashCommand: public Command{
 
 struct GetFileCommand: public Command{
 	GetFileCommand(char* hash);
+};
+
+struct GetVirtualFileCommand: public Command{
+	GetVirtualFileCommand(char* filename);
+};
+struct AppendToVirtualFileCommand: public Command{
+	AppendToVirtualFileCommand(char* filename, char* text);
 };

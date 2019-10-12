@@ -7,27 +7,31 @@
 
 char* StandartDataWorker::GetFile(char* hash){
 	std::string path = StandartDataWorker::hashTable[hash];
-	std::ifstream fout(path.c_str());
+	return StandartDataWorker::GetFileByName((char*)path.c_str());
+};
+
+char* StandartDataWorker::GetFileByName(char *name){
+	std::ifstream fin(name);
 	std::string s;
 	std::string sum = "";
 	bool flag = false;
-	if(fout.is_open()){
-		while(!fout.eof()){
+	if(fin.is_open()){
+		while(!fin.eof()){
 			if (flag){
 				sum+='\n';
 			}else{
 				flag = true;
 			}
-			std::getline(fout,s);
+			std::getline(fin,s);
 			sum += s;
 		}
-		fout.close();
+		fin.close();
 		char *res = new char[sum.size()+1];
 		strcpy(res, sum.c_str());
 		return res;
 	}
 	return "File can't open";
-};
+}
 
 unsigned long int StandartDataWorker::GetHash(char* path){
 		std::ifstream fout(path);
@@ -55,6 +59,17 @@ void StandartDataWorker::LoadHashTable(){
 	StandartDataWorker::hashTable[p] = "data/firstfile.txt";
 	StandartDataWorker::hashTable["13008458447081099134"] = "../sem2.cpp";
 	printf("find: %s - %s\n", "data/firstfile.txt", p);
+}
+
+void StandartDataWorker::AppendToFileByName(char* name, char* text){
+	std::ofstream fout;
+	try{
+		fout.open(name, std::ios_base::app);
+		fout<<text;
+	}catch(...){
+		printf("Can't write to the file");
+	}
+	if(fout.is_open()) fout.close();
 }
 
 

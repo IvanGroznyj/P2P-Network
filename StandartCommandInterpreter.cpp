@@ -34,6 +34,18 @@
 			StadnartCommandInterpreter::sw->Send(sock, file, len+1);
 			break;
 		}
+
+		case CmdGetVirtualFile:{
+			char *file = StadnartCommandInterpreter::dw->GetFileByName((char*)cmd->argv[0].c_str());
+			int len = strlen(file);
+			StadnartCommandInterpreter::sw->Send(sock, file, len+1);
+			break;
+		}
+		case CmdAppendToVirtualFile:{
+			StadnartCommandInterpreter::dw->AppendToFileByName((char*)cmd->argv[0].c_str(), (char*)cmd->argv[1].c_str());
+			StadnartCommandInterpreter::sw->Send(sock, "OK", 3);
+			break;
+		}
 		default:
 			StadnartCommandInterpreter::sw->Send(sock,(char*)"Wrong cmd", 10);
 		}

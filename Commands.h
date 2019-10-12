@@ -7,37 +7,26 @@ enum CommandsIndexes{CmdEcho=1, CmdHi ,CmdHash, CmdGetFile};
 //int CommandsCount;
 
 struct Command{
+	Command();
+	Command(char name);
+	Command(char name, char* arg);
 	char name;
 	int argc;
 	string* argv;
 };
 
-struct ICommand{
-	virtual Command* ToStandartCommand()=0;
-};
-
-struct HiCommand: public ICommand{
+struct HiCommand: public Command{
 	HiCommand();
-	Command* ToStandartCommand();
 };
 
-struct EchoCommand: public ICommand{
+struct EchoCommand: public Command{
 	EchoCommand(char* text);
-	Command* ToStandartCommand();
-private:
-	string text;
 };
 
-struct HashCommand: public ICommand{
+struct HashCommand: public Command{
 	HashCommand(char* path);
-	Command* ToStandartCommand();
-private:
-	string path;
 };
 
-struct GetFileCommand: public ICommand{
+struct GetFileCommand: public Command{
 	GetFileCommand(char* hash);
-	Command* ToStandartCommand();
-private:
-	string hash;
 };

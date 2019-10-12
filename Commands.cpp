@@ -4,52 +4,26 @@
 //char* CommandsNames[]{"echo", "hi", "hash"};
 //int CommandsCount = sizeof(CommandsNames);
 
-HiCommand::HiCommand(){}
-
-Command* HiCommand::ToStandartCommand(){
-	Command* cmd = new Command();
-	cmd->name = CmdHi;
-	cmd->argc = 0;
-	cmd->argv = nullptr;
-	return cmd;
+Command::Command(){
+	Command::argc = 0;
+	Command::name = '\0';
+	Command::argv = nullptr;
 }
 
-EchoCommand::EchoCommand(char* text){
-	EchoCommand::text = text;
+Command::Command(char name){
+	Command::argc = 0;
+	Command::name = name;
+	Command::argv = nullptr;
 }
 
-Command* EchoCommand::ToStandartCommand(){
-	Command* cmd = new Command();
-	cmd->name = CmdEcho;
-	cmd->argc = 1;
-	cmd->argv = new string[1];
-	cmd->argv[0] = EchoCommand::text;
-	return cmd;
+Command::Command(char name, char* arg){
+	Command::name = name;
+	Command::argc = 1;
+	Command::argv = new string[1];
+	Command::argv[0] = arg;
 }
 
-HashCommand::HashCommand(char* path){
-	HashCommand::path = path;
-}
-
-Command* HashCommand::ToStandartCommand(){
-	Command* cmd = new Command();
-	cmd->name = CmdHash;
-	cmd->argc = 1;
-	cmd->argv = new string[1];
-	cmd->argv[0] = HashCommand::path;
-	return cmd;
-}
-
-GetFileCommand::GetFileCommand(char *hash){
-	GetFileCommand::hash = hash;
-}
-
-Command* GetFileCommand::ToStandartCommand(){
-	Command* cmd = new Command();
-	cmd->name = CmdGetFile;
-	cmd->argc = 1;
-	cmd->argv = new string[1];
-	cmd->argv[0] = GetFileCommand::hash;
-	return cmd;
-}
-
+HiCommand::HiCommand():Command(CmdHi){}
+EchoCommand::EchoCommand(char* text):Command(CmdEcho,text){}
+HashCommand::HashCommand(char* path):Command(CmdHash, path){}
+GetFileCommand::GetFileCommand(char* hash):Command(CmdGetFile, hash){}

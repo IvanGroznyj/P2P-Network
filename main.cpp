@@ -81,7 +81,7 @@ int main(int argc, char* argv[]){
 void NewCommandsTest(P2PClient *c){
 	cout<<"# NewCommandsTest\n";
 	int cnt = 6;
-	ICommand *cmd[cnt];// = new (ICommand*)[4];
+	Command *cmd[cnt];// = new (ICommand*)[4];
 	cmd[0] = new HiCommand();
 	cmd[1] = new EchoCommand("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 	cmd[2] = new EchoCommand("helloworldmyfriends");
@@ -90,7 +90,7 @@ void NewCommandsTest(P2PClient *c){
 	cmd[5] = new GetFileCommand("2309636224852936099");
 	Translator tr;
 	for (int i=0; i<cnt; i++){
-		char *txtcmd = tr.CommandToText(cmd[i]->ToStandartCommand());
+		char *txtcmd = tr.CommandToText(cmd[i]);
 		int len = strlen(txtcmd);
 		cout<<txtcmd<<"; len = "<<len<<endl;
 		cout<<c->GetAnswer(ip, port, txtcmd, len)<<endl;

@@ -24,8 +24,8 @@ EchoCommand::EchoCommand(char* text):Command(CmdEcho,text){}
 HashCommand::HashCommand(char* path):Command(CmdHash, path){}
 GetFileCommand::GetFileCommand(char* hash):Command(CmdGetFile, hash){}
 GetVirtualFileCommand::GetVirtualFileCommand(char *filename):Command(CmdGetVirtualFile, filename){};
-AppendToVirtualFileCommand::AppendToVirtualFileCommand(char *filename, char *text){
-	Command::name = CmdAppendToVirtualFile;
+WriteToVirtualFileCommand::WriteToVirtualFileCommand(char *filename, char *text){
+	Command::name = CmdWriteToVirtualFile;
 	Command::argc = 2;
 	Command::argv = new string[2];
 	Command::argv[0] = filename;

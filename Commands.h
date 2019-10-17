@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-enum CommandsIndexes{CmdEcho=1, CmdHi ,CmdHash, CmdGetFile, CmdGetVirtualFile, CmdAppendToVirtualFile};
+enum CommandsIndexes{CmdEcho=1, CmdHi ,CmdHash, CmdGetFile, CmdGetVirtualFile, CmdWriteToVirtualFile};
 
 struct Command{
 	Command();
@@ -31,6 +31,6 @@ struct GetFileCommand: public Command{
 struct GetVirtualFileCommand: public Command{
 	GetVirtualFileCommand(char* filename);
 };
-struct AppendToVirtualFileCommand: public Command{
-	AppendToVirtualFileCommand(char* filename, char* text);
+struct WriteToVirtualFileCommand: public Command{
+	WriteToVirtualFileCommand(char* filename, char* text);
 };

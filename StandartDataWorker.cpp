@@ -58,7 +58,6 @@ void StandartDataWorker::LoadHashTable(){
 	strcpy(p, tmp.c_str());
 	StandartDataWorker::hashTable[p] = "data/firstfile.txt";
 	StandartDataWorker::hashTable["13008458447081099134"] = "../sem2.cpp";
-	//printf("find: %s - %s\n", "data/firstfile.txt", p);
 }
 
 void StandartDataWorker::AppendToFileByName(char* name, char* text){

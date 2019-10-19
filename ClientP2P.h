@@ -1,24 +1,20 @@
-struct CientAddress{
-	char* ip;
-	int port;
-};
-
+#include <vector>
 class P2PClient {
 private:
 	ISocketWorker *sworker;
 	IRequestsHandler *handler;
 	IDataWorker *dworker;
-	char *ip;
-	int port;
+	ClientAddr* addr;
+	char *netTime;
 public:
 	P2PClient();
-	void BindClient(char* ip, int port);
+	void BindClient(ClientAddr* addr);
 	void StartListen();
 	void StopListen();
-	//void Build(StandartBuilder *builder);
-	char* GetAnswer(char *ip, int port, char* msg, int msgsize);
-
+	char* GetAnswer(ClientAddr* addr, char* msg, int msgsize);
 	void SetSocketWorker(ISocketWorker* sw);
 	void SetDataWorker(IDataWorker* dw);
 	void SetRequestsHandler(IRequestsHandler* rh);
+	char* GetNetworkTime();
+	std::vector<ClientAddr*>* GetNodeAddrsInNetwork();
 };

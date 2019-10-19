@@ -9,7 +9,7 @@ private:
 public:
 	void SetWorkers(ISocketWorker *sworker, ICommandInterpreter *cmdinterpreter);
 
-	void StartWorking(char *ip, int port);
+	void StartWorking(ClientAddr* addr);
 
 	int GetStatus();
 

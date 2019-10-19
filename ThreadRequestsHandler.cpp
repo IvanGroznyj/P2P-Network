@@ -22,10 +22,10 @@ void ThreadAnswer(ISocketWorker *sworker, int sock){
 	cmdintr->DoCommand(sock, tr.TextToCommand(ans));
 }
 
-void ThreadHandler(bool *isWorking, char* ip, int port, ISocketWorker *sworker){
+void ThreadHandler(bool *isWorking,  ClientAddr* addr, ISocketWorker *sworker){
 	int sock, listener;
 	listener = sworker->GetNewSocketId();
-	if(sworker->Bind(listener, ip, port)){
+	if(sworker->Bind(listener, addr)){
 		exit(2);
 	}
 
@@ -45,9 +45,9 @@ void ThreadHandler(bool *isWorking, char* ip, int port, ISocketWorker *sworker){
 		cmdintr = cmdinterpreter;
 	}
 
-	void ThreadRequestsHandler::StartWorking(char *ip, int port){
+	void ThreadRequestsHandler::StartWorking(ClientAddr* addr){
 		ThreadRequestsHandler::isWorking = true;
-		ThreadRequestsHandler::mainThreadHandler = new std::thread(ThreadHandler, &isWorking, ip, port, sw);
+		ThreadRequestsHandler::mainThreadHandler = new std::thread(ThreadHandler, &isWorking, addr, sw);
 		ThreadRequestsHandler::mainThreadHandler->detach();
 	}
 

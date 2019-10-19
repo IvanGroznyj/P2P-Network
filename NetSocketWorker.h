@@ -11,7 +11,7 @@
 
 class NetSocketWorker: public ISocketWorker{
 private:
-	void GetAddr(sockaddr_in &addr, char *ip, int port);
+	void GetAddr(sockaddr_in &addr, ClientAddr* caddr);
 public:
 	int GetNewSocketId();
 	
@@ -19,8 +19,8 @@ public:
 	void Send(int socketId, char* buff, int size);
 	
 	
-	bool Bind(int socketId, char *ip, int port);
+	bool Bind(int socketId,  ClientAddr* addr);
 	void Listen(int socketId, int count);
 	int Accept(int socketId);
-	int ConnectTo(int socketId, char *ip, int port);
+	int ConnectTo(int socketId,  ClientAddr* addr);
 };

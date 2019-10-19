@@ -42,14 +42,12 @@ bool CompareChatMessages(ChatMessage msg1, ChatMessage msg2){
 
 
 MyChat::MyChat() {
-	MyChat::ip = "localhost";
-	MyChat::port = 9091;
+	MyChat::addr = new ClientAddr("localhost", 9091);
 	MyChat::Run();
 }
 
-MyChat::MyChat(char *ip, int port){
-	MyChat::ip = ip;
-	MyChat::port = port;
+MyChat::MyChat(ClientAddr *addr){
+	MyChat::addr = addr;
 	MyChat::Run();
 }
 
@@ -58,37 +56,33 @@ void MyChat::Run(){
 		builder->BuildDataWorker();
 		builder->BuildSocketWorker();
 		builder->BuildRequestsHandler();
-		MyChat::addresses = nullptr;
 		MyChat::client = builder->GetClient();
-		MyChat::client->BindClient(MyChat::ip, MyChat::port);
+		MyChat::client->BindClient(MyChat::addr);
 		MyChat::client->StartListen();
 }
 
 void MyChat::UpdateClientList(){
-	if (MyChat::addresses != nullptr) delete[] MyChat::addresses;
 
-	MyChat::addresses = new CientAddress[1];
-	CientAddress addr;
-
-	addr.ip = MyChat::ip;
-	addr.port = MyChat::port;
-	MyChat::addresses[0] = addr;
 }
 
 char* MyChat::SendMessageToChat(char* chatName, char* message){
 	Translator tr;
 	ChatMessage msg;
-	msg.time = "00:01";
+	msg.time = MyChat::client->GetNetworkTime();
 	msg.name = "Ivan";
 	msg.text = message;
 	char *txtcmd = tr.CommandToText(new WriteToVirtualFileCommand(chatName, (char*)msg.ToString().c_str()));
-	return MyChat::client->GetAnswer(MyChat::addresses[0].ip, MyChat::addresses[0].port, txtcmd, strlen(txtcmd));
+	std::vector<ClientAddr*> *addrs = MyChat::client->GetNodeAddrsInNetwork();
+	char *res = "OK";
+	for(int i=0; i<addrs->size(); i++)
+		res = MyChat::client->GetAnswer((*addrs)[i], txtcmd, strlen(txtcmd));
+	return res;
 }
 
-std::vector<ChatMessage>* MyChat::GetChat(CientAddress *addr, char* chatName){
+std::vector<ChatMessage>* MyChat::GetChat(ClientAddr *addr, char* chatName){
 	Translator tr;
 	char *txtcmd = tr.CommandToText(new GetVirtualFileCommand(chatName));
-	char *msgsText = MyChat::client->GetAnswer(addr->ip, addr->port, txtcmd, strlen(txtcmd));
+	char *msgsText = MyChat::client->GetAnswer(addr, txtcmd, strlen(txtcmd));
 	std::vector<ChatMessage> *msgs = new std::vector<ChatMessage>();
 
 	char *p = msgsText;

@@ -14,8 +14,7 @@
 P2PClient *c;
 StandartBuilder *builder;
 MyChat *chat;
-char *ip = (char*)"localhost";
-int port = 9091;
+ClientAddr* main_addr = new ClientAddr("localhost", 9091);
 
 class MyTest: public CxxTest::TestSuite{
 public:
@@ -48,7 +47,7 @@ public:
 
 		c = builder->GetClient();
 
-		c->BindClient(ip,port);
+		c->BindClient(main_addr);
 		c->StartListen();
 		sleep(1);
 
@@ -56,7 +55,7 @@ public:
 		Command *cmd = new HiCommand();
 		char *txtcmd = tr.CommandToText(cmd);
 		int len = strlen(txtcmd);
-	    TS_ASSERT_EQUALS( c->GetAnswer(ip,port, txtcmd, len), "\\('')");
+	    TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "\\('')");
 	 }
 	void testCommandEcho()
 	{
@@ -64,7 +63,7 @@ public:
 		Command *cmd = new EchoCommand("Hello");
 		char *txtcmd = tr.CommandToText(cmd);
 		int len = strlen(txtcmd);
-	    TS_ASSERT_EQUALS( c->GetAnswer(ip,port, txtcmd, len), "Hello");
+	    TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello");
 	}
 
 	void testCommandEchoShortAfterLong(){
@@ -74,11 +73,11 @@ public:
 		Command *firstcmd = new EchoCommand(firststr);
 		char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(ip,port, txtcmd, len), firststr);
+		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), firststr);
 		Command *secondcmd = new EchoCommand(secondstr);
 		txtcmd = tr.CommandToText(secondcmd);
 		len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(ip,port, txtcmd, len), secondstr);
+		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), secondstr);
 	}
 
 	void testCommandHash(){
@@ -86,7 +85,7 @@ public:
 		Command *firstcmd = new HashCommand("data/firstfile.txt");
 		char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(ip,port, txtcmd, len), "2309636224852936099");
+		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "2309636224852936099");
 	}
 
 	void testCommandGetFile(){
@@ -94,7 +93,7 @@ public:
 		Command *firstcmd = new GetFileCommand("2309636224852936099");
 		char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(ip,port, txtcmd, len), "Hello\nIt's me!\nYou found me");
+		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello\nIt's me!\nYou found me");
 	}
 
 	void testChatMessage(){
@@ -106,7 +105,7 @@ public:
 	void testChatSendMessage(){
 		c->StopListen();
 		sleep(1);
-		chat = new MyChat("localhost", 9092);
+		chat = new MyChat(new ClientAddr("localhost", 9092));
 		sleep(1);
 		chat->UpdateClientList();
 		char* res = chat->SendMessageToChat("firstchat", "hello\n");
@@ -114,9 +113,7 @@ public:
 	}
 
 	void testGetChat(){
-		CientAddress *addr = new CientAddress();
-		addr->ip = "localhost";
-		addr->port = 9092;
+		ClientAddr *addr = new ClientAddr("localhost", 9092);
 		std::vector<ChatMessage> *msgs = chat->GetChat(addr, "firstchat");
 		TS_ASSERT_EQUALS(msgs->at(0).text, "hi\n");
 	}

@@ -1,3 +1,13 @@
+struct ClientAddr{
+	ClientAddr();
+	ClientAddr(char* ip, int port){
+		ClientAddr::ip = ip;
+		ClientAddr::port = port;
+	}
+	char* ip;
+	int port;
+};
+
 class ISocketWorker{
 public:
 	virtual int GetNewSocketId() =0;
@@ -5,10 +15,10 @@ public:
 	virtual int Recieve(int socketId, char* buff, int size)=0;
 	virtual void Send(int socketId, char* buff, int size)=0;
 
-	virtual bool Bind(int socketId, char *ip, int port)=0;
+	virtual bool Bind(int socketId, ClientAddr* addr)=0;
 	virtual void Listen(int socketId, int count)=0;
 	virtual int Accept(int socketId)=0;
-	virtual int ConnectTo(int socketId, char *ip, int port)=0;
+	virtual int ConnectTo(int socketId, ClientAddr* addr)=0;
 };
 
 class IDataWorker{
@@ -22,7 +32,7 @@ public:
 
 class IRequestsHandler{
 public:
-	virtual void StartWorking(char* ip, int port)=0;
+	virtual void StartWorking(ClientAddr* addr)=0;
 	virtual int GetStatus()=0;
 	virtual void StopWorking()=0;
 };

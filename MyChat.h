@@ -13,15 +13,13 @@ struct ChatMessage{
 class MyChat {
 private:
 	P2PClient *client;
-	CientAddress *addresses;
-	char* ip;
-	int port;
+	ClientAddr *addr;
 	void Run();
 public:
 	MyChat();
-	MyChat(char *ip, int port);
+	MyChat(ClientAddr* addr);
 	void UpdateClientList();
 	char* SendMessageToChat(char* chatName, char* message);
-	std::vector<ChatMessage>* GetChat(CientAddress *addr, char* chatName);
+	std::vector<ChatMessage>* GetChat(ClientAddr *addr, char* chatName);
 };
 

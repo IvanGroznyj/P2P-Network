@@ -1,8 +1,9 @@
 #include "../MainInterfaces.h"
-#include "../ClientP2P.h"
+#include "../MyChat.h"
 
 #include "../CommandInterpreter.h"
 #include "../StandartBuilder.h"
+
 
 #include <cstring>
 #include <iostream>
@@ -12,6 +13,7 @@
 
 P2PClient *c;
 StandartBuilder *builder;
+MyChat *chat;
 char *ip = (char*)"localhost";
 int port = 9091;
 
@@ -93,5 +95,29 @@ public:
 		char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
 		TS_ASSERT_EQUALS( c->GetAnswer(ip,port, txtcmd, len), "Hello\nIt's me!\nYou found me");
+	}
+
+	void testChatMessage(){
+		char *message = "00:00^Ivan^hello\n";
+		ChatMessage msg(message);
+		TS_ASSERT_EQUALS(msg.ToString().c_str(), message);
+	}
+
+	void testChatSendMessage(){
+		c->StopListen();
+		sleep(1);
+		chat = new MyChat("localhost", 9092);
+		sleep(1);
+		chat->UpdateClientList();
+		char* res = chat->SendMessageToChat("firstchat", "hello\n");
+		TS_ASSERT_EQUALS(res, "OK");
+	}
+
+	void testGetChat(){
+		CientAddress *addr = new CientAddress();
+		addr->ip = "localhost";
+		addr->port = 9092;
+		std::vector<ChatMessage> *msgs = chat->GetChat(addr, "firstchat");
+		TS_ASSERT_EQUALS(msgs->at(0).text, "hi\n");
 	}
 };

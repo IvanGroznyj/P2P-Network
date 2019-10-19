@@ -1,3 +1,8 @@
+struct CientAddress{
+	char* ip;
+	int port;
+};
+
 class P2PClient {
 private:
 	ISocketWorker *sworker;

@@ -36,12 +36,14 @@
 		}
 
 		case CmdGetVirtualFile:{
+			cmd->argv[0] = "virtualdata/" + cmd->argv[0];
 			char *file = StadnartCommandInterpreter::dw->GetFileByName((char*)cmd->argv[0].c_str());
 			int len = strlen(file);
 			StadnartCommandInterpreter::sw->Send(sock, file, len+1);
 			break;
 		}
 		case CmdWriteToVirtualFile:{
+			cmd->argv[0] = "virtualdata/" + cmd->argv[0];
 			StadnartCommandInterpreter::dw->AppendToFileByName((char*)cmd->argv[0].c_str(), (char*)cmd->argv[1].c_str());
 			StadnartCommandInterpreter::sw->Send(sock, "OK", 3);
 			break;
@@ -49,27 +51,5 @@
 		default:
 			StadnartCommandInterpreter::sw->Send(sock,(char*)"Wrong cmd", 10);
 		}
-
-		/*if(cmd->name == "echo"){
-			char *b = new char[cmd->argv[0].size()+1];
-			strcpy(b, cmd->argv[0].c_str());
-			StadnartCommandInterpreter::sw->Send(sock, b, cmd->argv[0].size()+1);
-		}else
-
-		if(cmd->name == "hi"){
-
-		}else
-
-		if(cmd->name == "hash"){
-			char *b  = new char[cmd->argv[0].size()];
-			strcpy(b, cmd->argv[0].c_str());
-			string tmp = to_string(StadnartCommandInterpreter::dw->GetHash(b));
-			char p[tmp.size()+1];
-			strcpy(p, tmp.c_str());
-			StadnartCommandInterpreter::sw->Send(sock, p, sizeof(p));
-		}else
-			StadnartCommandInterpreter::sw->Send(sock,(char*)"Wrong cmd", 10);
-			*/
-
 	}
 

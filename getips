@@ -1,0 +1,2 @@
+#!/bin/bash
+curl http://igp2p.000webhostapp.com/?cmd=getAddrs > ips.list

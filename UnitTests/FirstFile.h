@@ -3,7 +3,7 @@
 
 #include "../CommandInterpreter.h"
 #include "../StandartBuilder.h"
-
+#include "../NetSocketWorker.h"
 
 #include <cstring>
 #include <iostream>
@@ -116,5 +116,26 @@ public:
 		ClientAddr *addr = new ClientAddr("localhost", 9092);
 		std::vector<ChatMessage> *msgs = chat->GetChat(addr, "firstchat");
 		TS_ASSERT_EQUALS(msgs->at(0).text, "hi\n");
+	}
+
+	void testHTTP(){
+		ISocketWorker *sw = new NetSocketWorker();
+		int sock = sw->GetNewSocketId();
+		ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
+		int res = sw->ConnectTo(sock, addr);
+		TS_ASSERT(res>=0);
+		char *req = "GET /?cmd=getTime HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
+		sw->Send(sock, req, strlen(req));
+		printf("Sended\n");
+		//sleep(5);
+		char *buf = new char[1024];
+		sw->Recieve(sock, buf, 1024);
+		char *p = buf;
+		int k = 0;
+		while (*p!='\0'){
+			if(k==11) cout<<*p;
+			if(*p=='\n') k++;
+			p++;
+		}
 	}
 };

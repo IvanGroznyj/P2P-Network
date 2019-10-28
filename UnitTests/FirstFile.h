@@ -121,10 +121,11 @@ public:
 	void testHTTP(){
 		ISocketWorker *sw = new NetSocketWorker();
 		int sock = sw->GetNewSocketId();
+		sw->Bind(sock, new ClientAddr("185.48.37.119",16433));
 		ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
 		int res = sw->ConnectTo(sock, addr);
 		TS_ASSERT(res>=0);
-		char *req = "GET /?cmd=getTime HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
+		char *req = "GET /?cmd=getAddrs HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
 		sw->Send(sock, req, strlen(req));
 		printf("Sended\n");
 		//sleep(5);
@@ -137,5 +138,6 @@ public:
 			if(*p=='\n') k++;
 			p++;
 		}
+		//while(1){}
 	}
 };

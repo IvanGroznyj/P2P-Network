@@ -2,54 +2,43 @@
 #include "StandartCommandInterpreter.h"
 #include <cstring>
 
-	void StadnartCommandInterpreter::SetCommandInterpreter(ISocketWorker *sw, IDataWorker *dw){
-		StadnartCommandInterpreter::sw = sw;
+	void StadnartCommandInterpreter::SetDataWorker(IDataWorker *dw){
 		StadnartCommandInterpreter::dw = dw;
 	}
 
-	void StadnartCommandInterpreter::DoCommand(int sock, Command *cmd){
+	char* StadnartCommandInterpreter::DoCommand(Command *cmd){
 		switch(cmd->name){
 		case CmdHi:{
-			StadnartCommandInterpreter::sw->Send(sock, (char*)"\\('')", 7);
-			break;
+			return "\\('')";
 		}
 		case CmdEcho:{
 			char *b = new char[cmd->argv[0].size()+1];
 			strcpy(b, cmd->argv[0].c_str());
-			StadnartCommandInterpreter::sw->Send(sock, b, cmd->argv[0].size()+1);
-			break;
+			return b;
 		}
 		case CmdHash:{
 			char *b  = new char[cmd->argv[0].size()+1];
 			strcpy(b, cmd->argv[0].c_str());
 			string tmp = to_string(StadnartCommandInterpreter::dw->GetHash(b));
-			char p[tmp.size()+1];
+			char *p = new char[tmp.size()+1];
 			strcpy(p, tmp.c_str());
-			StadnartCommandInterpreter::sw->Send(sock, p, sizeof(p));
-			break;
+			return p;
 		}
 		case CmdGetFile:{
-			char *file = StadnartCommandInterpreter::dw->GetFile((char*)cmd->argv[0].c_str());
-			int len = strlen(file);
-			StadnartCommandInterpreter::sw->Send(sock, file, len+1);
-			break;
+			return StadnartCommandInterpreter::dw->GetFile((char*)cmd->argv[0].c_str());
 		}
 
 		case CmdGetVirtualFile:{
 			cmd->argv[0] = "virtualdata/" + cmd->argv[0];
-			char *file = StadnartCommandInterpreter::dw->GetFileByName((char*)cmd->argv[0].c_str());
-			int len = strlen(file);
-			StadnartCommandInterpreter::sw->Send(sock, file, len+1);
-			break;
+			return StadnartCommandInterpreter::dw->GetFileByName((char*)cmd->argv[0].c_str());
 		}
 		case CmdWriteToVirtualFile:{
 			cmd->argv[0] = "virtualdata/" + cmd->argv[0];
 			StadnartCommandInterpreter::dw->AppendToFileByName((char*)cmd->argv[0].c_str(), (char*)cmd->argv[1].c_str());
-			StadnartCommandInterpreter::sw->Send(sock, "OK", 3);
-			break;
+			return "OK";
 		}
 		default:
-			StadnartCommandInterpreter::sw->Send(sock,(char*)"Wrong cmd", 10);
+			return "Wrong cmd";
 		}
 	}
 

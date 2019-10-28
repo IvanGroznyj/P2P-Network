@@ -14,7 +14,7 @@
 void StandartBuilder::BuildRequestsHandler(){
 	ThreadRequestsHandler *thrh = new ThreadRequestsHandler();
 	StandartBuilder::cmdinter = new StadnartCommandInterpreter();
-	StandartBuilder::cmdinter->SetCommandInterpreter(StandartBuilder::sw, StandartBuilder::dw);
+	StandartBuilder::cmdinter->SetDataWorker(StandartBuilder::dw);
 	thrh->SetWorkers(StandartBuilder::sw, StandartBuilder::cmdinter);
 	StandartBuilder::rh = thrh;
 }

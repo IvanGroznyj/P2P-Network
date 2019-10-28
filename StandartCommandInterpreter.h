@@ -6,8 +6,8 @@ private:
 	ISocketWorker *sw;
 	IDataWorker *dw;
 public:
-	void SetCommandInterpreter(ISocketWorker *sw, IDataWorker *dw);
+	void SetDataWorker(IDataWorker *dw);
 
-	void DoCommand(int sock, Command *cmd);
+	char* DoCommand(Command *cmd);
 };
 

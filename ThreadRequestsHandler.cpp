@@ -19,7 +19,8 @@ void ThreadAnswer(ISocketWorker *sworker, int sock){
 	}
 	char *ans = new char[tmp.size()+1];
 	strcpy(ans, tmp.c_str());
-	cmdintr->DoCommand(sock, tr.TextToCommand(ans));
+	char *res = cmdintr->DoCommand(tr.TextToCommand(ans));
+	sworker->Send(sock, res, strlen(res)+1);
 }
 
 void ThreadHandler(bool *isWorking,  ClientAddr* addr, ISocketWorker *sworker){

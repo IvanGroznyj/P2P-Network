@@ -1,5 +1,6 @@
 #include "MainInterfaces.h"
-#include "CommandInterpreter.h"
+#include "StandartCommandInterpreter.h"
+#include "StandartDataWorker.h"
 #include "MyChat.h"
 #include "StandartBuilder.h"
 #include <cstring>
@@ -81,8 +82,10 @@ char* MyChat::SendMessageToChat(char* chatName, char* message){
 
 std::vector<ChatMessage>* MyChat::GetChat(ClientAddr *addr, char* chatName){
 	Translator tr;
-	char *txtcmd = tr.CommandToText(new GetVirtualFileCommand(chatName));
-	char *msgsText = MyChat::client->GetAnswer(addr, txtcmd, strlen(txtcmd));
+	Command *cmd = new GetVirtualFileCommand(chatName);
+	ICommandInterpreter* cmdi = new StadnartCommandInterpreter();
+	cmdi->SetDataWorker(new StandartDataWorker());
+	char *msgsText = cmdi->DoCommand(cmd);
 	std::vector<ChatMessage> *msgs = new std::vector<ChatMessage>();
 
 	char *p = msgsText;

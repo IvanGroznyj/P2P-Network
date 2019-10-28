@@ -121,22 +121,47 @@ public:
 	void testHTTP(){
 		ISocketWorker *sw = new NetSocketWorker();
 		int sock = sw->GetNewSocketId();
-		sw->Bind(sock, new ClientAddr("185.48.37.119",16433));
 		ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
 		int res = sw->ConnectTo(sock, addr);
 		TS_ASSERT(res>=0);
 		char *req = "GET /?cmd=getAddrs HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
 		sw->Send(sock, req, strlen(req));
-		printf("Sended\n");
-		//sleep(5);
 		char *buf = new char[1024];
 		sw->Recieve(sock, buf, 1024);
 		char *p = buf;
+		std::string tmp = "";
+		std::string ip = "";
+		std::string port = "";
 		int k = 0;
+		bool flag = true;
 		while (*p!='\0'){
-			if(k==11) cout<<*p;
-			if(*p=='\n') k++;
-			p++;
+			if(*p=='\n'){
+						k++;
+						if (k>=12) {
+							//cout<<"_"<<tmp<<"_"<<endl;
+
+							//cout<<ip<<" "<<port;
+							flag = true;
+							port = "";
+							ip = "";
+							tmp = "";
+						}
+					}else{
+						if(k>=11) {
+							//tmp += *p;
+							if(*p == '.' && *(p-1)=='\n') break;
+							if(*p==':') {
+								flag = false;
+								p++;
+							}
+							if (flag){
+								ip += *p;
+							}else{
+								port += *p;
+							}
+						}
+					}
+					p++;
 		}
 		//while(1){}
 	}

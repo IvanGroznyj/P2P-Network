@@ -65,7 +65,7 @@ void MyChat::Run(){
 }
 
 void MyChat::UpdateClientList(){
-
+	MyChat::client->UpdateNodeAddrsInNetwork();
 }
 
 char* MyChat::SendMessageToChat(char* chatName, char* message){

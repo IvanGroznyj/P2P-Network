@@ -14,6 +14,7 @@ P2PClient::P2PClient(){
 	P2PClient::sworker = nullptr;
 	P2PClient::dworker = nullptr;
 	P2PClient::netTime = "00:00:00";
+	P2PClient::addrs = new std::vector<ClientAddr*>();
 }
 
 void P2PClient::BindClient(ClientAddr* addr){
@@ -72,8 +73,6 @@ char* P2PClient::GetNetworkTime(){
 }
 
 std::vector<ClientAddr*>* P2PClient::GetNodeAddrsInNetwork(){
-	std::vector<ClientAddr*> *addrs = new std::vector<ClientAddr*>();
-	addrs->push_back(P2PClient::addr);
 	return addrs;
 }
 
@@ -94,4 +93,51 @@ void P2PClient::UpdateGlobalTime(){
 	}
 	P2PClient::netTime = new char[res.size()+1];
 	strcpy(P2PClient::netTime, (char*)res.c_str());
+}
+
+void P2PClient::UpdateNodeAddrsInNetwork(){
+	ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
+	char *req = "GET /?cmd=getAddrs HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
+	char *p = P2PClient::GetAnswer(addr, req, strlen(req));
+	std::vector<ClientAddr*> *newaddrs = new std::vector<ClientAddr*>();
+			std::string tmp = "";
+			std::string ip = "";
+			std::string port = "";
+			int k = 0;
+			char *tmpbuf;
+			bool flag = true;
+			while (*p!='\0'){
+				if(*p=='\n'){
+							k++;
+							if (k>=12) {
+								tmpbuf = new char[ip.size()+1];
+								strcpy(tmpbuf, ip.c_str());
+								newaddrs->push_back(new ClientAddr(tmpbuf, std::atoi(port.c_str())));
+								flag = true;
+								port = "";
+								ip = "";
+								tmp = "";
+							}
+						}else{
+							if(k>=11) {
+								//tmp += *p;
+								if(*p == '.' && *(p-1)=='\n') break;
+								if(*p==':') {
+									flag = false;
+									p++;
+								}
+								if (flag){
+									ip += *p;
+								}else{
+									port += *p;
+								}
+							}
+						}
+						p++;
+			}
+	/*for (int i=0; i<newaddrs->size(); i++){
+		cout<<newaddrs->at(i)->ip<<":"<<newaddrs->at(i)->port<<endl;
+	}*/
+	P2PClient::addrs->clear();
+	P2PClient::addrs = newaddrs;
 }

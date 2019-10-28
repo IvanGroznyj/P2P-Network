@@ -6,6 +6,7 @@ private:
 	IDataWorker *dworker;
 	ClientAddr* addr;
 	char *netTime;
+	std::vector<ClientAddr*> *addrs;
 public:
 	P2PClient();
 	void BindClient(ClientAddr* addr);
@@ -17,5 +18,6 @@ public:
 	void SetRequestsHandler(IRequestsHandler* rh);
 	char* GetNetworkTime();
 	void UpdateGlobalTime();
+	void UpdateNodeAddrsInNetwork();
 	std::vector<ClientAddr*>* GetNodeAddrsInNetwork();
 };

@@ -1,24 +1,26 @@
 #include "MainInterfaces.h"
 #include "StandartCommandInterpreter.h"
 #include "StandartDataWorker.h"
+#include "NetSocketWorker.h"
 #include "MyChat.h"
 #include "StandartBuilder.h"
 #include <cstring>
 #include <algorithm>
+#include <ctime>
 
 ChatMessage::ChatMessage(){
-	ChatMessage::time = "";
+	ChatMessage::msgtime = "";
 	ChatMessage::name = "";
 	ChatMessage::text = "";
 }
 
 ChatMessage::ChatMessage(char *txtmessage){
-	ChatMessage::time = "";
+	ChatMessage::msgtime = "";
 	ChatMessage::name = "";
 	ChatMessage::text = "";
 	char *p = txtmessage;
 	while(*p != '^' && *p != '\0'){
-		ChatMessage::time += *p;
+		ChatMessage::msgtime += *p;
 		p++;
 	}
 	p++;
@@ -34,11 +36,11 @@ ChatMessage::ChatMessage(char *txtmessage){
 }
 
 std::string ChatMessage::ToString(){
-	return ChatMessage::time + '^' + ChatMessage::name + '^' + ChatMessage::text;
+	return ChatMessage::msgtime + '^' + ChatMessage::name + '^' + ChatMessage::text;
 }
 
 bool CompareChatMessages(ChatMessage msg1, ChatMessage msg2){
-  return msg1.time < msg2.time;
+  return msg1.msgtime < msg2.msgtime;
 }
 
 
@@ -54,12 +56,12 @@ MyChat::MyChat(ClientAddr *addr){
 
 void MyChat::Run(){
 	StandartBuilder *builder = new StandartBuilder();
-		builder->BuildDataWorker();
-		builder->BuildSocketWorker();
-		builder->BuildRequestsHandler();
-		MyChat::client = builder->GetClient();
-		MyChat::client->BindClient(MyChat::addr);
-		MyChat::client->StartListen();
+	builder->BuildDataWorker();
+	builder->BuildSocketWorker();
+	builder->BuildRequestsHandler();
+	MyChat::client = builder->GetClient();
+	MyChat::client->BindClient(MyChat::addr);
+	MyChat::client->StartListen();
 }
 
 void MyChat::UpdateClientList(){
@@ -69,7 +71,10 @@ void MyChat::UpdateClientList(){
 char* MyChat::SendMessageToChat(char* chatName, char* message){
 	Translator tr;
 	ChatMessage msg;
-	msg.time = MyChat::client->GetNetworkTime();
+
+	MyChat::client->UpdateGlobalTime();
+
+	msg.msgtime = MyChat::client->GetNetworkTime();
 	msg.name = "Ivan";
 	msg.text = message;
 	char *txtcmd = tr.CommandToText(new WriteToVirtualFileCommand(chatName, (char*)msg.ToString().c_str()));

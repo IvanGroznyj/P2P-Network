@@ -76,3 +76,22 @@ std::vector<ClientAddr*>* P2PClient::GetNodeAddrsInNetwork(){
 	addrs->push_back(P2PClient::addr);
 	return addrs;
 }
+
+void P2PClient::UpdateGlobalTime(){
+	ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
+	char *req = "GET /?cmd=getTime HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
+	char *p = P2PClient::GetAnswer(addr, req, strlen(req));
+	int k = 0;
+	std::string res = "";
+	while (*p!='\0'){
+		if(*p=='\n'){
+			k++;
+		}else{
+			if(k==11) res += *p;
+		}
+		if(k>11) break;
+		p++;
+	}
+	P2PClient::netTime = new char[res.size()+1];
+	strcpy(P2PClient::netTime, (char*)res.c_str());
+}

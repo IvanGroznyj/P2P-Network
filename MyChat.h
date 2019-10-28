@@ -4,7 +4,7 @@
 struct ChatMessage{
 	ChatMessage();
 	ChatMessage(char *txtmessage);
-	std::string time;
+	std::string msgtime;
 	std::string name;
 	std::string text;
 	std::string ToString();
@@ -14,6 +14,7 @@ class MyChat {
 private:
 	P2PClient *client;
 	ClientAddr *addr;
+	clock_t lastClock;
 	void Run();
 public:
 	MyChat();

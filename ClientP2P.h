@@ -16,5 +16,6 @@ public:
 	void SetDataWorker(IDataWorker* dw);
 	void SetRequestsHandler(IRequestsHandler* rh);
 	char* GetNetworkTime();
+	void UpdateGlobalTime();
 	std::vector<ClientAddr*>* GetNodeAddrsInNetwork();
 };

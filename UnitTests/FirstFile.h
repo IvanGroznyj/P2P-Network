@@ -137,9 +137,6 @@ public:
 			if(*p=='\n'){
 						k++;
 						if (k>=12) {
-							//cout<<"_"<<tmp<<"_"<<endl;
-
-							//cout<<ip<<" "<<port;
 							flag = true;
 							port = "";
 							ip = "";
@@ -147,7 +144,6 @@ public:
 						}
 					}else{
 						if(k>=11) {
-							//tmp += *p;
 							if(*p == '.' && *(p-1)=='\n') break;
 							if(*p==':') {
 								flag = false;

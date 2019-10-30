@@ -5,14 +5,14 @@ private:
 	IRequestsHandler *handler;
 	IDataWorker *dworker;
 	ClientAddr* addr;
-	char *netTime;
+	char *net_time;
 	std::vector<ClientAddr*> *addrs;
 public:
 	P2PClient();
 	void BindClient(ClientAddr* addr);
 	void StartListen();
 	void StopListen();
-	char* GetAnswer(ClientAddr* addr, char* msg, int msgsize);
+	char* GetAnswer(ClientAddr* addr, char* msg, int msg_size);
 	void SetSocketWorker(ISocketWorker* sw);
 	void SetDataWorker(IDataWorker* dw);
 	void SetRequestsHandler(IRequestsHandler* rh);

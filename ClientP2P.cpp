@@ -23,24 +23,33 @@ void P2PClient::BindClient(ClientAddr* addr){
 }
 
 void P2PClient::StartListen(){
+	ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
+	std::string req = "GET /?cmd=addMe&ip=";
+	req+=P2PClient::addr->ip;
+	req+="&port=";
+	req+=to_string(P2PClient::addr->port);
+	req+=" HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
+	P2PClient::GetAnswer(addr, (char*)req.c_str(), req.size());
 	P2PClient::handler->StartWorking(P2PClient::addr);
 };
 
 void P2PClient::StopListen(){
 	P2PClient::handler->StopWorking();
+	int sock = P2PClient::sworker->GetNewSocketId();
+	P2PClient::sworker->ConnectTo(sock, P2PClient::addr);
+	P2PClient::sworker->Send(sock, "k", 1);
+	P2PClient::sworker->Close(sock);
 };
 
 char* P2PClient::GetAnswer(ClientAddr *addr, char* msg, int msgsize){
 	int sock = P2PClient::sworker->GetNewSocketId();
 	if(sock < 0)
 	{
-		perror("socket");
-		exit(1);
+		return "socket error";
 	}
 	if(P2PClient::sworker->ConnectTo(sock, addr)<0)
 	{
-		perror("connect");
-		exit(2);
+		return "connection error";
 	}
 	P2PClient::sworker->Send(sock, msg, msgsize+1);
 	string resStr = "";
@@ -98,46 +107,43 @@ void P2PClient::UpdateGlobalTime(){
 void P2PClient::UpdateNodeAddrsInNetwork(){
 	ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
 	char *req = "GET /?cmd=getAddrs HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
-	char *p = P2PClient::GetAnswer(addr, req, strlen(req));
-	std::vector<ClientAddr*> *newaddrs = new std::vector<ClientAddr*>();
-			std::string tmp = "";
-			std::string ip = "";
-			std::string port = "";
-			int k = 0;
-			char *tmpbuf;
-			bool flag = true;
-			while (*p!='\0'){
-				if(*p=='\n'){
-							k++;
-							if (k>=12) {
-								tmpbuf = new char[ip.size()+1];
-								strcpy(tmpbuf, ip.c_str());
-								newaddrs->push_back(new ClientAddr(tmpbuf, std::atoi(port.c_str())));
-								flag = true;
-								port = "";
-								ip = "";
-								tmp = "";
-							}
-						}else{
-							if(k>=11) {
-								//tmp += *p;
-								if(*p == '.' && *(p-1)=='\n') break;
-								if(*p==':') {
-									flag = false;
-									p++;
-								}
-								if (flag){
-									ip += *p;
-								}else{
-									port += *p;
-								}
-							}
-						}
-						p++;
-			}
-	/*for (int i=0; i<newaddrs->size(); i++){
-		cout<<newaddrs->at(i)->ip<<":"<<newaddrs->at(i)->port<<endl;
-	}*/
+	char *buf = P2PClient::GetAnswer(addr, req, strlen(req));
+	char *p = buf;
 	P2PClient::addrs->clear();
-	P2PClient::addrs = newaddrs;
+	std::string tmp = "";
+	std::string ip = "";
+	std::string port = "";
+	int k = 0;
+	char *tmpbuf;
+	bool flag = true;
+	while (*p!='\0'){
+		if(*p=='\n'){
+			k++;
+			if (k>=12) {
+				tmpbuf = new char[ip.size()+1];
+				strcpy(tmpbuf, ip.c_str());
+				addr = new ClientAddr(tmpbuf, std::atoi(port.c_str()));
+				P2PClient::addrs->push_back(addr);
+				flag = true;
+				port = "";
+				ip = "";
+				tmp = "";
+			}
+		}else{
+			if(k>=11) {
+				if(*p == '-') {
+					break;
+				}
+				if(*p==':') {
+					flag = false;
+				}else
+				if (flag){
+					ip += *p;
+				}else{
+					port += *p;
+				}
+			}
+		}
+		p++;
+	}
 }

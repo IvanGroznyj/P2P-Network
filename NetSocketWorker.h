@@ -23,4 +23,5 @@ public:
 	void Listen(int socketId, int count);
 	int Accept(int socketId);
 	int ConnectTo(int socketId,  ClientAddr* addr);
+	void Close(int socketId);
 };

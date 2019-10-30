@@ -4,7 +4,7 @@ struct ClientAddr{
 		ClientAddr::ip = ip;
 		ClientAddr::port = port;
 	}
-	char* ip;
+	const char* ip;
 	int port;
 };
 
@@ -19,6 +19,7 @@ public:
 	virtual void Listen(int socketId, int count)=0;
 	virtual int Accept(int socketId)=0;
 	virtual int ConnectTo(int socketId, ClientAddr* addr)=0;
+	virtual void Close(int socketId)=0;
 };
 
 class IDataWorker{

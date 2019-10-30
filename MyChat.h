@@ -20,7 +20,7 @@ public:
 	MyChat();
 	MyChat(ClientAddr* addr);
 	void UpdateClientList();
-	char* SendMessageToChat(char* chatName, char* message);
-	std::vector<ChatMessage>* GetChat(ClientAddr *addr, char* chatName);
+	char* SendMessageToChat(char* chatName, char* nickname, char* message);
+	std::vector<ChatMessage>* GetChat(char* chatName);
 };
 

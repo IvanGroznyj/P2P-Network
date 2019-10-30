@@ -21,9 +21,10 @@ void ThreadAnswer(ISocketWorker *sworker, int sock){
 	strcpy(ans, tmp.c_str());
 	char *res = cmdintr->DoCommand(tr.TextToCommand(ans));
 	sworker->Send(sock, res, strlen(res)+1);
+	sworker->Close(sock);
 }
 
-void ThreadHandler(bool *isWorking,  ClientAddr* addr, ISocketWorker *sworker){
+void ThreadHandler(ClientAddr* addr, ISocketWorker *sworker){
 	int sock, listener;
 	listener = sworker->GetNewSocketId();
 	if(sworker->Bind(listener, addr)){
@@ -31,7 +32,7 @@ void ThreadHandler(bool *isWorking,  ClientAddr* addr, ISocketWorker *sworker){
 	}
 
 	sworker->Listen(listener, 0);
-	while(*isWorking){
+	while(1){
 		sock = sworker->Accept(listener);
 		if(sock < 0){
 			exit(3);
@@ -48,7 +49,7 @@ void ThreadHandler(bool *isWorking,  ClientAddr* addr, ISocketWorker *sworker){
 
 	void ThreadRequestsHandler::StartWorking(ClientAddr* addr){
 		ThreadRequestsHandler::isWorking = true;
-		ThreadRequestsHandler::mainThreadHandler = new std::thread(ThreadHandler, &isWorking, addr, sw);
+		ThreadRequestsHandler::mainThreadHandler = new std::thread(ThreadHandler, addr, sw);
 		ThreadRequestsHandler::mainThreadHandler->detach();
 	}
 

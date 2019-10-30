@@ -68,24 +68,36 @@ void MyChat::UpdateClientList(){
 	MyChat::client->UpdateNodeAddrsInNetwork();
 }
 
-char* MyChat::SendMessageToChat(char* chatName, char* message){
+char* MyChat::SendMessageToChat(char* chatName, char* nickname, char* message){
 	Translator tr;
 	ChatMessage msg;
 
 	MyChat::client->UpdateGlobalTime();
 
 	msg.msgtime = MyChat::client->GetNetworkTime();
-	msg.name = "Ivan";
+	msg.name = nickname;
 	msg.text = message;
 	char *txtcmd = tr.CommandToText(new WriteToVirtualFileCommand(chatName, (char*)msg.ToString().c_str()));
 	std::vector<ClientAddr*> *addrs = MyChat::client->GetNodeAddrsInNetwork();
 	char *res = "OK";
-	for(int i=0; i<addrs->size(); i++)
+	int i=0;
+	while(i < addrs->size()){
 		res = MyChat::client->GetAnswer((*addrs)[i], txtcmd, strlen(txtcmd));
+		if (res[0] == 'O' && res[1] == 'K'){
+			i++;
+		}else{
+			addrs->erase(addrs->begin()+i);
+		}
+	}
+	if(addrs->size() > 0){
+		res = "OK";
+	} else{
+		res = "ERROR";
+	}
 	return res;
 }
 
-std::vector<ChatMessage>* MyChat::GetChat(ClientAddr *addr, char* chatName){
+std::vector<ChatMessage>* MyChat::GetChat(char* chatName){
 	Translator tr;
 	Command *cmd = new GetVirtualFileCommand(chatName);
 	ICommandInterpreter* cmdi = new StadnartCommandInterpreter();

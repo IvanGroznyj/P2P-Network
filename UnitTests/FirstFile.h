@@ -108,13 +108,12 @@ public:
 		chat = new MyChat(new ClientAddr("localhost", 9092));
 		sleep(1);
 		chat->UpdateClientList();
-		char* res = chat->SendMessageToChat("firstchat", "hello\n");
+		char* res = chat->SendMessageToChat("firstchat", "mynick", "hello\n");
 		TS_ASSERT_EQUALS(res, "OK");
 	}
 
 	void testGetChat(){
-		ClientAddr *addr = new ClientAddr("localhost", 9092);
-		std::vector<ChatMessage> *msgs = chat->GetChat(addr, "firstchat");
+		std::vector<ChatMessage> *msgs = chat->GetChat("firstchat");
 		TS_ASSERT_EQUALS(msgs->at(0).text, "hi\n");
 	}
 

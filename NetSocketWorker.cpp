@@ -2,6 +2,7 @@
 #include "NetSocketWorker.h"
 #include <cstring>
 #include <iostream>
+#include <unistd.h>
 
 	void NetSocketWorker::GetAddr(sockaddr_in &addr,  ClientAddr* caddr){
 		addr.sin_family = AF_INET;
@@ -19,10 +20,18 @@
 
 
 	int NetSocketWorker::Recieve(int socketId, char* buff, int size){
-		return recv(socketId, buff, size, 0);
+		try{
+			return recv(socketId, buff, size, 0);
+		}catch(...){
+			return -1;
+		}
 	}
 	void NetSocketWorker::Send(int socketId, char* buff, int size){
-		send(socketId, buff, size, 0);
+		try{
+			send(socketId, buff, size, 0);
+		}catch(...){
+
+		}
 	}
 
 
@@ -41,4 +50,7 @@
 		struct sockaddr_in saddr;
 		NetSocketWorker::GetAddr(saddr, addr);
 		return connect(socketId, (struct sockaddr *)&saddr, sizeof(saddr));
+	}
+	void NetSocketWorker::Close(int socketId){
+		close(socketId);
 	}

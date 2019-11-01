@@ -9,38 +9,38 @@
 #include <ctime>
 
 ChatMessage::ChatMessage(){
-	ChatMessage::msgtime = "";
+	ChatMessage::msg_time = "";
 	ChatMessage::name = "";
 	ChatMessage::text = "";
 }
 
-ChatMessage::ChatMessage(char *txtmessage){
-	ChatMessage::msgtime = "";
+ChatMessage::ChatMessage(char *message){
+	ChatMessage::msg_time = "";
 	ChatMessage::name = "";
 	ChatMessage::text = "";
-	char *p = txtmessage;
-	while(*p != '^' && *p != '\0'){
-		ChatMessage::msgtime += *p;
-		p++;
+	char *iterator_ptr = message;
+	while(*iterator_ptr != ChatMessage::separator && *iterator_ptr != '\0'){
+		ChatMessage::msg_time += *iterator_ptr;
+		iterator_ptr++;
 	}
-	p++;
-	while(*p != '^' && *p != '\0'){
-		ChatMessage::name += *p;
-		p++;
+	iterator_ptr++;
+	while(*iterator_ptr != ChatMessage::separator && *iterator_ptr != '\0'){
+		ChatMessage::name += *iterator_ptr;
+		iterator_ptr++;
 	}
-	p++;
-	while(*p != '^' && *p != '\0'){
-		ChatMessage::text += *p;
-		p++;
+	iterator_ptr++;
+	while(*iterator_ptr != ChatMessage::separator && *iterator_ptr != '\0'){
+		ChatMessage::text += *iterator_ptr;
+		iterator_ptr++;
 	}
 }
 
 std::string ChatMessage::ToString(){
-	return ChatMessage::msgtime + '^' + ChatMessage::name + '^' + ChatMessage::text;
+	return ChatMessage::msg_time + ChatMessage::separator + ChatMessage::name + ChatMessage::separator + ChatMessage::text;
 }
 
 bool CompareChatMessages(ChatMessage msg1, ChatMessage msg2){
-  return msg1.msgtime < msg2.msgtime;
+  return msg1.msg_time < msg2.msg_time;
 }
 
 
@@ -68,55 +68,55 @@ void MyChat::UpdateClientList(){
 	MyChat::client->UpdateNodeAddrsInNetwork();
 }
 
-char* MyChat::SendMessageToChat(char* chatName, char* nickname, char* message){
-	Translator tr;
+char* MyChat::SendMessageToChat(char* chat_name, char* nickname, char* message){
+	Translator cmd_translator;
 	ChatMessage msg;
 
 	MyChat::client->UpdateGlobalTime();
 
-	msg.msgtime = MyChat::client->GetNetworkTime();
+	msg.msg_time = MyChat::client->GetNetworkTime();
 	msg.name = nickname;
 	msg.text = message;
-	char *txtcmd = tr.CommandToText(new WriteToVirtualFileCommand(chatName, (char*)msg.ToString().c_str()));
-	std::vector<ClientAddr*> *addrs = MyChat::client->GetNodeAddrsInNetwork();
-	char *res = "OK";
+
+	char *cmd_str = cmd_translator.CommandToText(new WriteToVirtualFileCommand(chat_name, (char*)msg.ToString().c_str()));
+	std::vector<ClientAddr*> *addr_list = MyChat::client->GetNodeAddrsInNetwork();
+	char *result_buffer = "OK";
 	int i=0;
-	while(i < addrs->size()){
-		res = MyChat::client->GetAnswer((*addrs)[i], txtcmd, strlen(txtcmd));
-		if (res[0] == 'O' && res[1] == 'K'){
+	while(i < addr_list->size()){
+		result_buffer = MyChat::client->GetAnswer((*addr_list)[i], cmd_str, strlen(cmd_str));
+		if (result_buffer[0] == 'O' && result_buffer[1] == 'K'){
 			i++;
 		}else{
-			addrs->erase(addrs->begin()+i);
+			addr_list->erase(addr_list->begin()+i);
 		}
 	}
-	if(addrs->size() > 0){
-		res = "OK";
+	if(addr_list->size() > 0){
+		result_buffer = "OK";
 	} else{
-		res = "ERROR";
+		result_buffer = "ERROR";
 	}
-	return res;
+	return result_buffer;
 }
 
-std::vector<ChatMessage>* MyChat::GetChat(char* chatName){
-	Translator tr;
-	Command *cmd = new GetVirtualFileCommand(chatName);
-	ICommandInterpreter* cmdi = new StadnartCommandInterpreter();
-	cmdi->SetDataWorker(new StandartDataWorker());
-	char *msgsText = cmdi->DoCommand(cmd);
-	std::vector<ChatMessage> *msgs = new std::vector<ChatMessage>();
+std::vector<ChatMessage>* MyChat::GetChat(char* chat_name){
+	Command *cmd = new GetVirtualFileCommand(chat_name);
+	ICommandInterpreter* cmd_interpreter = new StadnartCommandInterpreter();
+	cmd_interpreter->SetDataWorker(new StandartDataWorker());
+	char *msgsText = cmd_interpreter->DoCommand(cmd);
+	std::vector<ChatMessage> *msg_list = new std::vector<ChatMessage>();
 
-	char *p = msgsText;
-	std::string tmp = "";
-	while(*p != '\0'){
-		if(*p=='\n'){
-			tmp+='\n';
-			msgs->push_back(ChatMessage((char*)tmp.c_str()));
-			tmp = "";
+	char *iterator_ptr = msgsText;
+	std::string sum_buffer = "";
+	while(*iterator_ptr != '\0'){
+		if(*iterator_ptr=='\n'){
+			sum_buffer+='\n';
+			msg_list->push_back(ChatMessage((char*)sum_buffer.c_str()));
+			sum_buffer = "";
 		}else{
-			tmp += *p;
+			sum_buffer += *iterator_ptr;
 		}
-		p++;
+		iterator_ptr++;
 	}
-	sort(msgs->begin(), msgs->end(), CompareChatMessages);
-	return msgs;
+	sort(msg_list->begin(), msg_list->end(), CompareChatMessages);
+	return msg_list;
 }

@@ -38,21 +38,20 @@ void ThreadHandler(ClientAddr* addr, ISocketWorker *socket_worker){
 	}
 }
 
+void ThreadRequestsHandler::SetWorkers(ISocketWorker *socket_worker, ICommandInterpreter *cmd_interpeter){
+	ThreadRequestsHandler::socket_worker = socket_worker;
+	global_cmd_interpeter = cmd_interpeter;
+}
 
-	void ThreadRequestsHandler::SetWorkers(ISocketWorker *socket_worker, ICommandInterpreter *cmd_interpeter){
-		ThreadRequestsHandler::socket_worker = socket_worker;
-		global_cmd_interpeter = cmd_interpeter;
-	}
+void ThreadRequestsHandler::StartWorking(ClientAddr* addr){
+	ThreadRequestsHandler::is_working = true;
+	(new std::thread(ThreadHandler, addr, ThreadRequestsHandler::socket_worker))->detach();
+}
 
-	void ThreadRequestsHandler::StartWorking(ClientAddr* addr){
-		ThreadRequestsHandler::is_working = true;
-		(new std::thread(ThreadHandler, addr, ThreadRequestsHandler::socket_worker))->detach();
-	}
+int ThreadRequestsHandler::GetStatus(){
+	return ThreadRequestsHandler::is_working;
+}
 
-	int ThreadRequestsHandler::GetStatus(){
-		return ThreadRequestsHandler::is_working;
-	}
-
-	void ThreadRequestsHandler::StopWorking(){
-		ThreadRequestsHandler::is_working= false;
-	}
+void ThreadRequestsHandler::StopWorking(){
+	ThreadRequestsHandler::is_working= false;
+}

@@ -3,24 +3,26 @@
 
 struct ChatMessage{
 	ChatMessage();
-	ChatMessage(char *txtmessage);
-	std::string msgtime;
+	ChatMessage(char *message);
+	std::string msg_time;
 	std::string name;
 	std::string text;
 	std::string ToString();
+private:
+	const static char separator = '^';
 };
 
 class MyChat {
 private:
 	P2PClient *client;
 	ClientAddr *addr;
-	clock_t lastClock;
+	clock_t last_clock;
 	void Run();
 public:
 	MyChat();
 	MyChat(ClientAddr* addr);
 	void UpdateClientList();
-	char* SendMessageToChat(char* chatName, char* nickname, char* message);
-	std::vector<ChatMessage>* GetChat(char* chatName);
+	char* SendMessageToChat(char* chat_name, char* nickname, char* message);
+	std::vector<ChatMessage>* GetChat(char* chat_name);
 };
 

@@ -2,7 +2,7 @@
 
 class Translator {
 private:
-	char separator = '|';
+	const static char separator = '|';
 public:
 	char* CommandToText(Command *cmd);
 	Command* TextToCommand(char* cmd_str);

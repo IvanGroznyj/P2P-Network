@@ -12,14 +12,14 @@ class ISocketWorker{
 public:
 	virtual int GetNewSocketId() =0;
 
-	virtual int Recieve(int socketId, char* buff, int size)=0;
-	virtual void Send(int socketId, char* buff, int size)=0;
+	virtual int Recieve(int socket_id, char* buff, int size)=0;
+	virtual void Send(int socket_id, char* buff, int size)=0;
 
-	virtual bool Bind(int socketId, ClientAddr* addr)=0;
-	virtual void Listen(int socketId, int count)=0;
-	virtual int Accept(int socketId)=0;
-	virtual int ConnectTo(int socketId, ClientAddr* addr)=0;
-	virtual void Close(int socketId)=0;
+	virtual bool Bind(int socket_id, ClientAddr* addr)=0;
+	virtual void Listen(int socket_id, int count)=0;
+	virtual int Accept(int socket_id)=0;
+	virtual int ConnectTo(int socket_id, ClientAddr* addr)=0;
+	virtual void Close(int socket_id)=0;
 };
 
 class IDataWorker{

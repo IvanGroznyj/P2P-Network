@@ -8,6 +8,8 @@ using namespace std;
 #include "Commands.h"
 #include <cstring>
 
+#define ANSWER_BODY_START_ROW 11
+
 P2PClient::P2PClient(){
 	P2PClient::addr = new ClientAddr((char *)"127.0.0.1", 9091);
 	P2PClient::handler = nullptr;
@@ -96,9 +98,9 @@ void P2PClient::UpdateGlobalTime(){
 		if(*answer_body=='\n'){
 			current_row_number++;
 		}else{
-			if(current_row_number==11) result_str += *answer_body;
+			if(current_row_number==ANSWER_BODY_START_ROW) result_str += *answer_body;
 		}
-		if(current_row_number>11) break;
+		if(current_row_number>ANSWER_BODY_START_ROW) break;
 		answer_body++;
 	}
 	P2PClient::net_time = new char[result_str.size()+1];
@@ -120,7 +122,7 @@ void P2PClient::UpdateNodeAddrsInNetwork(){
 	while (*answer_body!='\0'){
 		if(*answer_body=='\n'){
 			current_row_number++;
-			if (current_row_number>=12) {
+			if (current_row_number>=ANSWER_BODY_START_ROW+1) {
 				tmp_buffer = new char[ip.size()+1];
 				strcpy(tmp_buffer, ip.c_str());
 				addr = new ClientAddr(tmp_buffer, std::atoi(port.c_str()));
@@ -131,7 +133,7 @@ void P2PClient::UpdateNodeAddrsInNetwork(){
 				ip = "";
 			}
 		}else{
-			if(current_row_number>=11) {
+			if(current_row_number>=ANSWER_BODY_START_ROW) {
 				if(*answer_body == '-') {
 					break;
 				}

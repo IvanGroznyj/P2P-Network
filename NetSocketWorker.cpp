@@ -4,53 +4,53 @@
 #include <iostream>
 #include <unistd.h>
 
-	void NetSocketWorker::GetAddr(sockaddr_in &addr,  ClientAddr* caddr){
-		addr.sin_family = AF_INET;
-		addr.sin_port = htons(caddr->port);
-		struct hostent *server;
-		server = gethostbyname(caddr->ip);
-		//bcopy((char *)server->h_addr, (char *)&addr.sin_addr.s_addr, server->h_length);
-		std::memmove((char*)&addr.sin_addr.s_addr, (char *)server->h_addr, server->h_length);
-	}
+void NetSocketWorker::ConvertAddr(sockaddr_in &output_addr,  ClientAddr* client_addr){
+	output_addr.sin_family = AF_INET;
+	output_addr.sin_port = htons(client_addr->port);
+	struct hostent *server;
+	server = gethostbyname(client_addr->ip);
+	//bcopy((char *)server->h_addr, (char *)&addr.sin_addr.s_addr, server->h_length);
+	std::memmove((char*)&output_addr.sin_addr.s_addr, (char *)server->h_addr, server->h_length);
+}
 
+int NetSocketWorker::GetNewSocketId() {
+	return socket(AF_INET, SOCK_STREAM, 0);
+}
 
-	int NetSocketWorker::GetNewSocketId() {
-		return socket(AF_INET, SOCK_STREAM, 0);
+int NetSocketWorker::Recieve(int socket_id, char* buff, int size){
+	try{
+		return recv(socket_id, buff, size, 0);
+	}catch(...){
+		return -1;
 	}
+}
 
+void NetSocketWorker::Send(int socket_id, char* buff, int size){
+	try{
+		send(socket_id, buff, size, 0);
+	}catch(...){}
+}
 
-	int NetSocketWorker::Recieve(int socketId, char* buff, int size){
-		try{
-			return recv(socketId, buff, size, 0);
-		}catch(...){
-			return -1;
-		}
-	}
-	void NetSocketWorker::Send(int socketId, char* buff, int size){
-		try{
-			send(socketId, buff, size, 0);
-		}catch(...){
+bool NetSocketWorker::Bind(int socket_id,  ClientAddr* addr){
+	struct sockaddr_in connection_addr;
+	NetSocketWorker::ConvertAddr(connection_addr, addr);
+	return bind(socket_id, (struct sockaddr *)&connection_addr, sizeof(connection_addr))<0;
+}
 
-		}
-	}
+void NetSocketWorker::Listen(int socket_id, int count = 1){
+	listen(socket_id, count);
+}
 
+int NetSocketWorker::Accept(int socket_id){
+	return accept(socket_id, NULL, NULL);
+}
 
-	bool NetSocketWorker::Bind(int socketId,  ClientAddr* addr){
-		struct sockaddr_in saddr;
-		NetSocketWorker::GetAddr(saddr, addr);
-		return bind(socketId, (struct sockaddr *)&saddr, sizeof(saddr))<0;
-	}
-	void NetSocketWorker::Listen(int socketId, int count = 1){
-		listen(socketId, count);
-	}
-	int NetSocketWorker::Accept(int socketId){
-		return accept(socketId, NULL, NULL);
-	}
-	int NetSocketWorker::ConnectTo(int socketId,  ClientAddr* addr){
-		struct sockaddr_in saddr;
-		NetSocketWorker::GetAddr(saddr, addr);
-		return connect(socketId, (struct sockaddr *)&saddr, sizeof(saddr));
-	}
-	void NetSocketWorker::Close(int socketId){
-		close(socketId);
-	}
+int NetSocketWorker::ConnectTo(int socket_id,  ClientAddr* addr){
+	struct sockaddr_in connection_addr;
+	NetSocketWorker::ConvertAddr(connection_addr, addr);
+	return connect(socket_id, (struct sockaddr *)&connection_addr, sizeof(connection_addr));
+}
+
+void NetSocketWorker::Close(int socket_id){
+	close(socket_id);
+}

@@ -116,48 +116,4 @@ public:
 		std::vector<ChatMessage> *msgs = chat->GetChat("firstchat");
 		TS_ASSERT_EQUALS(msgs->at(0).text, "hi\n");
 	}
-
-	void testHTTP(){
-		ISocketWorker *sw = new NetSocketWorker();
-		int sock = sw->GetNewSocketId();
-		ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
-		int res = sw->ConnectTo(sock, addr);
-		TS_ASSERT(res>=0);
-		char *req = "GET /?cmd=getAddrs HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
-		sw->Send(sock, req, strlen(req));
-		char *buf = new char[1024];
-		sw->Recieve(sock, buf, 1024);
-		char *p = buf;
-		std::string tmp = "";
-		std::string ip = "";
-		std::string port = "";
-		int k = 0;
-		bool flag = true;
-		while (*p!='\0'){
-			if(*p=='\n'){
-						k++;
-						if (k>=12) {
-							flag = true;
-							port = "";
-							ip = "";
-							tmp = "";
-						}
-					}else{
-						if(k>=11) {
-							if(*p == '.' && *(p-1)=='\n') break;
-							if(*p==':') {
-								flag = false;
-								p++;
-							}
-							if (flag){
-								ip += *p;
-							}else{
-								port += *p;
-							}
-						}
-					}
-					p++;
-		}
-		//while(1){}
-	}
 };

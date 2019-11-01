@@ -2,41 +2,35 @@
 #include <cstring>
 
 char* Translator::CommandToText(Command* cmd){
-	string res = "";
-	res += cmd->name;
+	string sum_str = "";
+	sum_str += cmd->name;
 	for(int i=0; i < cmd->argc; i++){
-		res += '|'+(cmd->argv)[i];
+		sum_str += '|'+(cmd->argv)[i];
 	}
-	//res+='\0';
-	char *resc = new char[res.size()+1];
-	strcpy(resc, res.c_str());
-	return resc;
+	char *result_buffer = new char[sum_str.size()+1];
+	strcpy(result_buffer, sum_str.c_str());
+	return result_buffer;
 }
 
-Command* Translator::TextToCommand(char* txtcmd){
-	Command *res = new Command();
-	char *c = txtcmd;
-	res->name = txtcmd[0];
-	res->argc = 0;
-	while(*c!='\0'){
-		if(*c=='|') (res->argc)++;
-		c++;
+Command* Translator::TextToCommand(char* cmd_str){
+	Command *result_cmd = new Command();
+	char *passing_ptr = cmd_str;
+	result_cmd->name = cmd_str[0];
+	result_cmd->argc = 0;
+	while(*passing_ptr!='\0'){
+		if(*passing_ptr==Translator::separator) (result_cmd->argc)++;
+		passing_ptr++;
 	}
-	c=txtcmd;
-	/*
-	while(*c!='|' && *c!='\0'){
-		res->name += *c;
-		c++;
-	}*/
-	c++;
-	res->argv = new string[res->argc];
-	for(int i=0; i < (res->argc); i++){
-		c++;
-		(res->argv)[i] = "";
-		while(*c!='|' && *c!='\0'){
-			(res->argv)[i] += *c;
-			c++;
+	passing_ptr=cmd_str;
+	passing_ptr++;
+	result_cmd->argv = new string[result_cmd->argc];
+	for(int i=0; i < (result_cmd->argc); i++){
+		passing_ptr++;
+		(result_cmd->argv)[i] = "";
+		while(*passing_ptr!=Translator::separator && *passing_ptr!='\0'){
+			(result_cmd->argv)[i] += *passing_ptr;
+			passing_ptr++;
 		}
 	}
-	return res;
+	return result_cmd;
 }

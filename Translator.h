@@ -1,7 +1,9 @@
 #include "Commands.h"
 
 class Translator {
+private:
+	char separator = '|';
 public:
 	char* CommandToText(Command *cmd);
-	Command* TextToCommand(char* txtcmd);
+	Command* TextToCommand(char* cmd_str);
 };

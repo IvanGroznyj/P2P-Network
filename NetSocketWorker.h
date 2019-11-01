@@ -11,17 +11,17 @@
 
 class NetSocketWorker: public ISocketWorker{
 private:
-	void GetAddr(sockaddr_in &addr, ClientAddr* caddr);
+	void ConvertAddr(sockaddr_in &addr, ClientAddr* client_addr);
 public:
 	int GetNewSocketId();
 	
-	int Recieve(int socketId, char* buff, int size);
-	void Send(int socketId, char* buff, int size);
+	int Recieve(int socket_id, char* buff, int size);
+	void Send(int socket_id, char* buff, int size);
 	
 	
-	bool Bind(int socketId,  ClientAddr* addr);
-	void Listen(int socketId, int count);
-	int Accept(int socketId);
-	int ConnectTo(int socketId,  ClientAddr* addr);
-	void Close(int socketId);
+	bool Bind(int socket_id,  ClientAddr* addr);
+	void Listen(int socket_id, int count);
+	int Accept(int socket_id);
+	int ConnectTo(int socket_id,  ClientAddr* addr);
+	void Close(int socket_id);
 };

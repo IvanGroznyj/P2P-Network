@@ -2,10 +2,11 @@
 
 class StadnartCommandInterpreter: public ICommandInterpreter{
 private:
-	int sock;
-	IDataWorker *dw;
+	int sock_id;
+	IDataWorker *data_worker;
+	char* virtual_dir = "virtualdata/";
 public:
-	void SetDataWorker(IDataWorker *dw);
+	void SetDataWorker(IDataWorker *data_worker);
 
 	char* DoCommand(Command *cmd);
 };

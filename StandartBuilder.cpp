@@ -12,28 +12,28 @@
 
 
 void StandartBuilder::BuildRequestsHandler(){
-	ThreadRequestsHandler *thrh = new ThreadRequestsHandler();
-	StandartBuilder::cmdinter = new StadnartCommandInterpreter();
-	StandartBuilder::cmdinter->SetDataWorker(StandartBuilder::dw);
-	thrh->SetWorkers(StandartBuilder::sw, StandartBuilder::cmdinter);
-	StandartBuilder::rh = thrh;
+	ThreadRequestsHandler *thread_req_handler = new ThreadRequestsHandler();
+	StandartBuilder::cmd_interpeter = new StadnartCommandInterpreter();
+	StandartBuilder::cmd_interpeter->SetDataWorker(StandartBuilder::data_worker);
+	thread_req_handler->SetWorkers(StandartBuilder::socket_worker, StandartBuilder::cmd_interpeter);
+	StandartBuilder::request_handler = thread_req_handler;
 }
 
 void StandartBuilder::BuildSocketWorker(){
-	StandartBuilder::sw = new NetSocketWorker();
+	StandartBuilder::socket_worker = new NetSocketWorker();
 }
 
 void StandartBuilder::BuildDataWorker(){
-	StandartDataWorker *tmpdw = new StandartDataWorker();
-	tmpdw->LoadHashTable();
-	StandartBuilder::dw = tmpdw;
+	StandartDataWorker *dworker = new StandartDataWorker();
+	dworker->LoadHashTable();
+	StandartBuilder::data_worker = dworker;
 
 }
 
 P2PClient* StandartBuilder::GetClient(){
 	P2PClient* curClient = new P2PClient();
-	curClient->SetDataWorker(StandartBuilder::dw);
-	curClient->SetSocketWorker(StandartBuilder::sw);
-	curClient->SetRequestsHandler(StandartBuilder::rh);
+	curClient->SetDataWorker(StandartBuilder::data_worker);
+	curClient->SetSocketWorker(StandartBuilder::socket_worker);
+	curClient->SetRequestsHandler(StandartBuilder::request_handler);
 	return curClient;
 }

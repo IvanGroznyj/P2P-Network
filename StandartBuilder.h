@@ -1,9 +1,9 @@
 class StandartBuilder {
 private:
-	ICommandInterpreter* cmdinter;
-	IDataWorker* dw;
-	ISocketWorker* sw;
-	IRequestsHandler* rh;
+	ICommandInterpreter* cmd_interpeter;
+	IDataWorker* data_worker;
+	ISocketWorker* socket_worker;
+	IRequestsHandler* request_handler;
 public:
 	void BuildSocketWorker();
 	void BuildRequestsHandler();

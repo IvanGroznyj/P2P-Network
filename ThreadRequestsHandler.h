@@ -1,13 +1,10 @@
-#include <thread>
-
 class ThreadRequestsHandler: public IRequestsHandler{
 private:
-	ISocketWorker *sw;
-	IDataWorker *dw;
-	std::thread *mainThreadHandler;
-	bool isWorking = false;
+	ISocketWorker *socket_worker;
+	IDataWorker *data_worker;
+	bool is_working = false;
 public:
-	void SetWorkers(ISocketWorker *sworker, ICommandInterpreter *cmdinterpreter);
+	void SetWorkers(ISocketWorker *socket_worker, ICommandInterpreter *cmd_interpeter);
 
 	void StartWorking(ClientAddr* addr);
 

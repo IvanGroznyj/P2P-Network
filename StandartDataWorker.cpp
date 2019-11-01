@@ -6,47 +6,47 @@
 #include <dirent.h>
 
 char* StandartDataWorker::GetFile(char* hash){
-	std::string path = StandartDataWorker::hashTable[hash];
+	std::string path = StandartDataWorker::hash_table[hash];
 	return StandartDataWorker::GetFileByName((char*)path.c_str());
 };
 
 char* StandartDataWorker::GetFileByName(char *name){
-	std::ifstream fin(name);
-	std::string s;
-	std::string sum = "";
-	bool flag = false;
-	if(fin.is_open()){
-		while(!fin.eof()){
-			if (flag){
-				sum+='\n';
+	std::ifstream file_in(name);
+	std::string buffer_str;
+	std::string sum_str = "";
+	bool is_row_end = false;
+	if(file_in.is_open()){
+		while(!file_in.eof()){
+			if (is_row_end){
+				sum_str+='\n';
 			}else{
-				flag = true;
+				is_row_end = true;
 			}
-			std::getline(fin,s);
-			sum += s;
+			std::getline(file_in,buffer_str);
+			sum_str += buffer_str;
 		}
-		fin.close();
-		char *res = new char[sum.size()+1];
-		strcpy(res, sum.c_str());
-		return res;
+		file_in.close();
+		char *result_buffer = new char[sum_str.size()+1];
+		strcpy(result_buffer, sum_str.c_str());
+		return result_buffer;
 	}
 	return "File can't open";
 }
 
 unsigned long int StandartDataWorker::GetHash(char* path){
-		std::ifstream fout(path);
-		std::string s;
-		std::string sum = "";
-		if(fout.is_open()){
-					while(!fout.eof()){
-						std::getline(fout,s);
-						sum += s;
-					}
-					fout.close();
-					return std::hash<std::string>{}(sum);
+	std::ifstream file_in(path);
+	std::string buffer_str;
+	std::string sum_str = "";
+	if(file_in.is_open()){
+		while(!file_in.eof()){
+			std::getline(file_in,buffer_str);
+			sum_str += buffer_str;
 		}
-		return -1;
-	};
+		file_in.close();
+		return std::hash<std::string>{}(sum_str);
+	}
+	return -1;
+};
 
 char* StandartDataWorker::AddFile(char* path){
 	return "kek";
@@ -56,19 +56,19 @@ void StandartDataWorker::LoadHashTable(){
 	std::string tmp = std::to_string(StandartDataWorker::GetHash("data/firstfile.txt"));
 	char p[tmp.size()+1];
 	strcpy(p, tmp.c_str());
-	StandartDataWorker::hashTable[p] = "data/firstfile.txt";
-	StandartDataWorker::hashTable["13008458447081099134"] = "../sem2.cpp";
+	StandartDataWorker::hash_table[p] = "data/firstfile.txt";
+	StandartDataWorker::hash_table["13008458447081099134"] = "../sem2.cpp";
 }
 
 void StandartDataWorker::AppendToFileByName(char* name, char* text){
-	std::ofstream fout;
+	std::ofstream file_out;
 	try{
-		fout.open(name, std::ios_base::app);
-		fout<<text;
+		file_out.open(name, std::ios_base::app);
+		file_out<<text;
 	}catch(...){
 		printf("Can't write to the file");
 	}
-	if(fout.is_open()) fout.close();
+	if(file_out.is_open()) file_out.close();
 }
 
 

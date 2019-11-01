@@ -12,7 +12,7 @@ private:
 	    }
 	};
 
-	std::map<std::string, std::string> hashTable;
+	std::map<std::string, std::string> hash_table;
 
 public:
 	char* GetFile(char* hash);

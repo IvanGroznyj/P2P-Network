@@ -113,7 +113,8 @@ public:
 	}
 
 	void testGetChat(){
-		std::vector<ChatMessage> *msgs = chat->GetChat("firstchat");
-		TS_ASSERT_EQUALS(msgs->at(0).text, "hi\n");
+		chat->UpdateChat("firstchat");
+		map<pair<string, string>, string> *msgs = chat->GetChat("firstchat");
+		TS_ASSERT_EQUALS((*msgs)[make_pair("2019-10-28_20:08:00","IG")], "hi\n");
 	}
 };

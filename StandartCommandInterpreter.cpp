@@ -27,7 +27,7 @@ char* StadnartCommandInterpreter::DoCommand(Command *cmd){
 	case CmdGetFile:{
 		return StadnartCommandInterpreter::data_worker->GetFile((char*)cmd->argv[0].c_str());
 	}
-		case CmdGetVirtualFile:{
+	case CmdGetVirtualFile:{
 		cmd->argv[0] = StadnartCommandInterpreter::virtual_dir + cmd->argv[0];
 		return StadnartCommandInterpreter::data_worker->GetFileByName((char*)cmd->argv[0].c_str());
 	}

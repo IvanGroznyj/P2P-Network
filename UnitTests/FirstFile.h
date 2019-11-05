@@ -5,6 +5,8 @@
 #include "../StandartBuilder.h"
 #include "../NetSocketWorker.h"
 
+#include "../NatPMP.h"
+
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
@@ -116,5 +118,9 @@ public:
 		chat->UpdateChat("firstchat");
 		map<pair<string, string>, string> *msgs = chat->GetChat("firstchat");
 		TS_ASSERT_EQUALS((*msgs)[make_pair("2019-10-28_20:08:00","IG")], "hi\n");
+	}
+
+	void testNATPMP(){
+		NatPMP::PortForwarding(NatPMP::TCP_CODE, 9095, 9095, 3600);
 	}
 };

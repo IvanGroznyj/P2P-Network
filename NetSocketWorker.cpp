@@ -27,7 +27,7 @@ int NetSocketWorker::Recieve(int socket_id, char* buff, int size){
 
 void NetSocketWorker::Send(int socket_id, char* buff, int size){
 	try{
-		send(socket_id, buff, size, 0);
+		send(socket_id, buff, size, IPPROTO_TCP);
 	}catch(...){}
 }
 

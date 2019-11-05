@@ -6,6 +6,7 @@ using namespace std;
 #include "MainInterfaces.h"
 #include "ClientP2P.h"
 #include "Commands.h"
+#include "NatPMP.h"
 #include <cstring>
 
 #define ANSWER_BODY_START_ROW 11
@@ -35,6 +36,8 @@ void P2PClient::StartListen(){
 
 	P2PClient::GetAnswer(addr, (char*)request_str.c_str(), request_str.size());
 
+	NatPMP::PortForwarding(NatPMP::TCP_CODE, P2PClient::addr->port, P2PClient::addr->port, 3600);
+
 	P2PClient::handler->StartWorking(P2PClient::addr);
 };
 
@@ -45,6 +48,9 @@ void P2PClient::StopListen(){
 	P2PClient::sworker->ConnectTo(sock, P2PClient::addr);
 	P2PClient::sworker->Send(sock, "k", 1);
 	P2PClient::sworker->Close(sock);
+
+	NatPMP::PortForwarding(NatPMP::TCP_CODE, P2PClient::addr->port, P2PClient::addr->port, 0);
+
 };
 
 char* P2PClient::GetAnswer(ClientAddr *addr, char* msg, int msg_size){

@@ -178,3 +178,7 @@ char* MyChat::ConvertChatToString(map<pair<string, string>, string>* chat){
 	strcpy(result_buffer, sum_buffer.c_str());
 	return result_buffer;
 }
+
+void MyChat::Close(){
+	MyChat::client->StopListen();
+}

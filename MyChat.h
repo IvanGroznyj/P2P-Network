@@ -30,5 +30,6 @@ public:
 	void UpdateChat(char* chat_name);
 	char* SendMessageToChat(char* chat_name, char* nickname, char* message);
 	map<pair<string, string>, string>* GetChat(char* chat_name);
+	void Close();
 };
 

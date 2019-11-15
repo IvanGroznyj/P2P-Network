@@ -34,6 +34,8 @@ void NetSocketWorker::Send(int socket_id, char* buff, int size){
 bool NetSocketWorker::Bind(int socket_id,  ClientAddr* addr){
 	struct sockaddr_in connection_addr;
 	NetSocketWorker::ConvertAddr(connection_addr, addr);
+	int reuse = 1;
+	setsockopt(socket_id, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse));
 	return bind(socket_id, (struct sockaddr *)&connection_addr, sizeof(connection_addr))<0;
 }
 

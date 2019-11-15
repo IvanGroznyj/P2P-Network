@@ -43,14 +43,7 @@ void P2PClient::StartListen(){
 
 void P2PClient::StopListen(){
 	P2PClient::handler->StopWorking();
-
-	int sock = P2PClient::sworker->GetNewSocketId();
-	P2PClient::sworker->ConnectTo(sock, P2PClient::addr);
-	P2PClient::sworker->Send(sock, "k", 1);
-	P2PClient::sworker->Close(sock);
-
 	NatPMP::PortForwarding(NatPMP::TCP_CODE, P2PClient::addr->port, P2PClient::addr->port, 0);
-
 };
 
 char* P2PClient::GetAnswer(ClientAddr *addr, char* msg, int msg_size){

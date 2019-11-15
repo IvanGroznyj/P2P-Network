@@ -95,7 +95,9 @@ public:
 		Command *firstcmd = new GetFileCommand("2309636224852936099");
 		char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
+		c->StopListen();
 		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello\nIt's me!\nYou found me");
+		sleep(1);
 	}
 
 	void testChatMessage(){
@@ -105,9 +107,7 @@ public:
 	}
 
 	void testChatSendMessage(){
-		c->StopListen();
-		sleep(1);
-		chat = new MyChat(new ClientAddr("localhost", 9092));
+		chat = new MyChat(new ClientAddr("localhost", 9091));
 		sleep(1);
 		chat->UpdateClientList();
 		char* res = chat->SendMessageToChat("firstchat", "mynick", "hello\n");
@@ -117,6 +117,7 @@ public:
 	void testGetChat(){
 		chat->UpdateChat("firstchat");
 		map<pair<string, string>, string> *msgs = chat->GetChat("firstchat");
+		chat->Close();
 		TS_ASSERT_EQUALS((*msgs)[make_pair("2019-10-28_20:08:00","IG")], "hi\n");
 	}
 

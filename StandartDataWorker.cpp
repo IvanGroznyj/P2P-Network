@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cstring>
 #include <dirent.h>
+using namespace std;
 
 char* StandartDataWorker::GetFile(char* hash){
 	std::string path = StandartDataWorker::hash_table[hash];
@@ -33,7 +34,7 @@ char* StandartDataWorker::GetFileByName(char *name){
 	return "File can't open";
 }
 
-unsigned long int StandartDataWorker::GetHash(char* path){
+unsigned long int StandartDataWorker::GetHash(const char* path){
 	std::ifstream file_in(path);
 	std::string buffer_str;
 	std::string sum_str = "";
@@ -53,11 +54,23 @@ char* StandartDataWorker::AddFile(char* path){
 };
 
 void StandartDataWorker::LoadHashTable(){
-	std::string tmp = std::to_string(StandartDataWorker::GetHash("data/firstfile.txt"));
-	char p[tmp.size()+1];
-	strcpy(p, tmp.c_str());
-	StandartDataWorker::hash_table[p] = "data/firstfile.txt";
-	StandartDataWorker::hash_table["13008458447081099134"] = "../sem2.cpp";
+	DIR *dp;
+	dirent *d;
+	dp = opendir("data");
+	string tmp;
+	string current_file = "data/";
+	while((d = readdir(dp)) != NULL)
+	{
+		if(!strcmp(d->d_name,".") || !strcmp(d->d_name,".."))
+			continue;
+
+		current_file += d->d_name;
+		tmp = to_string(StandartDataWorker::GetHash(current_file.c_str()));
+		char p[tmp.size()+1];
+		strcpy(p, tmp.c_str());
+		StandartDataWorker::hash_table[p] = "data/firstfile.txt";
+		current_file = "data/";
+	}
 }
 
 void StandartDataWorker::AppendToFileByName(char* name, char* text){

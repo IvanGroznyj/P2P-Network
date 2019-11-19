@@ -16,7 +16,7 @@ private:
 
 public:
 	char* GetFile(char* hash);
-	unsigned long int GetHash(char* path);
+	unsigned long int GetHash(const char* path);
 	char* AddFile(char* path);
 	char* GetFileByName(char* name);
 	void AppendToFileByName(char* name, char* text);

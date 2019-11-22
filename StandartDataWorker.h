@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include <iostream>
 #include <map>
 
@@ -15,10 +18,10 @@ private:
 	std::map<std::string, std::string> hash_table;
 
 public:
-	char* GetFile(char* hash);
+	char* GetFile(const char* hash);
 	unsigned long int GetHash(const char* path);
-	char* AddFile(char* path);
-	char* GetFileByName(char* name);
-	void AppendToFileByName(char* name, char* text);
+	char* AddFile(const char* path);
+	char* GetFileByName(const char* name);
+	void AppendToFileByName(const char* name, const char* text);
 	void LoadHashTable();
 };

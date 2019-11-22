@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include "MainInterfaces.h"
 #include "StandartCommandInterpreter.h"
 #include "StandartDataWorker.h"
@@ -8,6 +11,7 @@
 #include <algorithm>
 #include <ctime>
 #include <iostream>
+using namespace std;
 
 ChatMessage::ChatMessage(){
 	ChatMessage::msg_time = "";
@@ -36,7 +40,7 @@ ChatMessage::ChatMessage(char *message){
 	}
 }
 
-std::string ChatMessage::ToString(){
+string ChatMessage::ToString(){
 	return ChatMessage::msg_time + ChatMessage::separator + ChatMessage::name + ChatMessage::separator + ChatMessage::text;
 }
 
@@ -71,7 +75,7 @@ void MyChat::UpdateClientList(){
 
 void MyChat::UpdateChat(char* chat_name){
 	Translator cmd_translator;
-	char *cmd_str = cmd_translator.CommandToText(new GetVirtualFileCommand(chat_name));
+	const char *cmd_str = cmd_translator.CommandToText(new GetVirtualFileCommand(chat_name));
 
 	vector<ClientAddr*> *addr_list = MyChat::client->GetNodeAddrsInNetwork();
 	char *result_buffer = "OK";
@@ -114,7 +118,7 @@ char* MyChat::SendMessageToChat(char* chat_name, char* nickname, char* message){
 	msg.name = nickname;
 	msg.text = message;
 
-	char *cmd_str = cmd_translator.CommandToText(new WriteToVirtualFileCommand(chat_name, (char*)msg.ToString().c_str()));
+	const char *cmd_str = cmd_translator.CommandToText(new WriteToVirtualFileCommand(chat_name, (char*)msg.ToString().c_str()));
 	vector<ClientAddr*> *addr_list = MyChat::client->GetNodeAddrsInNetwork();
 	char *result_buffer = "OK";
 	int i=0;

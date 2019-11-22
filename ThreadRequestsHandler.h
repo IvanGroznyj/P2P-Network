@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 class ThreadRequestsHandler: public IRequestsHandler{
 private:
 	ISocketWorker *socket_worker;

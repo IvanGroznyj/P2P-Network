@@ -1,4 +1,6 @@
-//#include "StandartCommandInterpreter.h"
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include "MainInterfaces.h"
 
 #include "ClientP2P.h"

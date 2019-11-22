@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include "Commands.h"
 
 Command::Command(){
@@ -12,7 +15,7 @@ Command::Command(char name){
 	Command::argv = nullptr;
 }
 
-Command::Command(char name, char* arg){
+Command::Command(char name, const char* arg){
 	Command::name = name;
 	Command::argc = 1;
 	Command::argv = new string[1];
@@ -20,11 +23,11 @@ Command::Command(char name, char* arg){
 }
 
 HiCommand::HiCommand():Command(CmdHi){}
-EchoCommand::EchoCommand(char* text):Command(CmdEcho,text){}
-HashCommand::HashCommand(char* path):Command(CmdHash, path){}
-GetFileCommand::GetFileCommand(char* hash):Command(CmdGetFile, hash){}
-GetVirtualFileCommand::GetVirtualFileCommand(char *filename):Command(CmdGetVirtualFile, filename){};
-WriteToVirtualFileCommand::WriteToVirtualFileCommand(char *filename, char *text){
+EchoCommand::EchoCommand(const char* text):Command(CmdEcho,text){}
+HashCommand::HashCommand(const char* path):Command(CmdHash, path){}
+GetFileCommand::GetFileCommand(const char* hash):Command(CmdGetFile, hash){}
+GetVirtualFileCommand::GetVirtualFileCommand(const char *filename):Command(CmdGetVirtualFile, filename){};
+WriteToVirtualFileCommand::WriteToVirtualFileCommand(const char *filename, const char *text){
 	Command::name = CmdWriteToVirtualFile;
 	Command::argc = 2;
 	Command::argv = new string[2];

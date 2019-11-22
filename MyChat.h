@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include "ClientP2P.h"
 #include <vector>
 #include <map>

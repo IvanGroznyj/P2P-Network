@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 class StandartBuilder {
 private:
 	ICommandInterpreter* cmd_interpeter;

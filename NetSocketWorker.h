@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #ifdef __linux__
     #include <sys/types.h>
 	#include <sys/socket.h>
@@ -16,7 +19,7 @@ public:
 	int GetNewSocketId();
 	
 	int Recieve(int socket_id, char* buff, int size);
-	void Send(int socket_id, char* buff, int size);
+	void Send(int socket_id, const char* buff, int size);
 	
 	
 	bool Bind(int socket_id,  ClientAddr* addr);

@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include <vector>
 class P2PClient {
 private:
@@ -12,11 +15,11 @@ public:
 	void BindClient(ClientAddr* addr);
 	void StartListen();
 	void StopListen();
-	char* GetAnswer(ClientAddr* addr, char* msg, int msg_size);
+	char* GetAnswer(ClientAddr* addr, const char* msg, int msg_size);
 	void SetSocketWorker(ISocketWorker* sw);
 	void SetDataWorker(IDataWorker* dw);
 	void SetRequestsHandler(IRequestsHandler* rh);
-	char* GetNetworkTime();
+	const char* GetNetworkTime();
 	void UpdateGlobalTime();
 	void UpdateNodeAddrsInNetwork();
 	std::vector<ClientAddr*>* GetNodeAddrsInNetwork();

@@ -1,9 +1,12 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include "Commands.h"
 
 class Translator {
 private:
 	const static char separator = '|';
 public:
-	char* CommandToText(Command *cmd);
-	Command* TextToCommand(char* cmd_str);
+	const char* CommandToText(Command *cmd);
+	Command* TextToCommand(const char* cmd_str);
 };

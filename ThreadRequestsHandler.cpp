@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include "MainInterfaces.h"
 #include "StandartCommandInterpreter.h"
 #include "ThreadRequestsHandler.h"
@@ -21,9 +24,7 @@ void ThreadAnswer(ISocketWorker *sworker, int sock_id){
 		sum_buffer += buffer;
 		delete[] buffer;
 	}
-	char *request_buffer = new char[sum_buffer.size()+1];
-	strcpy(request_buffer, sum_buffer.c_str());
-	char *result_buffer = global_cmd_interpeter->DoCommand(cmd_translator.TextToCommand(request_buffer));
+	char *result_buffer = global_cmd_interpeter->DoCommand(cmd_translator.TextToCommand(sum_buffer.c_str()));
 	sworker->Send(sock_id, result_buffer, strlen(result_buffer)+1);
 	sworker->Close(sock_id);
 }
@@ -51,7 +52,7 @@ void ThreadHandler(ClientAddr* addr, ISocketWorker *socket_worker){
 		file_in.open("server_work");
 		buffer_str = "";
 		if (file_in.is_open()){
-			std::getline(file_in, buffer_str);
+			getline(file_in, buffer_str);
 			file_in.close();
 		}
 		if(buffer_str=="stop") break;
@@ -59,7 +60,7 @@ void ThreadHandler(ClientAddr* addr, ISocketWorker *socket_worker){
 		if(sock_id < 0){
 			exit(3);
 		}
-		(new std::thread(ThreadAnswer, socket_worker, sock_id))->detach();
+		(new thread(ThreadAnswer, socket_worker, sock_id))->detach();
 	}
 	socket_worker->Close(listener_id);
 }
@@ -71,7 +72,7 @@ void ThreadRequestsHandler::SetWorkers(ISocketWorker *socket_worker, ICommandInt
 
 void ThreadRequestsHandler::StartWorking(ClientAddr* addr){
 	ThreadRequestsHandler::is_working = true;
-	mainThread = new std::thread(ThreadHandler, addr, ThreadRequestsHandler::socket_worker);
+	mainThread = new thread(ThreadHandler, addr, ThreadRequestsHandler::socket_worker);
 	mainThread->detach();
 }
 

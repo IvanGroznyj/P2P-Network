@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include <iostream>
 #include "../MainInterfaces.h"
 #include "../MyChat.h"

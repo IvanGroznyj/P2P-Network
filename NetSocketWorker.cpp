@@ -1,16 +1,19 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include "MainInterfaces.h"
 #include "NetSocketWorker.h"
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
+using namespace std;
 
 void NetSocketWorker::ConvertAddr(sockaddr_in &output_addr,  ClientAddr* client_addr){
 	output_addr.sin_family = AF_INET;
 	output_addr.sin_port = htons(client_addr->port);
 	struct hostent *server;
 	server = gethostbyname(client_addr->ip);
-	//bcopy((char *)server->h_addr, (char *)&addr.sin_addr.s_addr, server->h_length);
-	std::memmove((char*)&output_addr.sin_addr.s_addr, (char *)server->h_addr, server->h_length);
+	memmove((char*)&output_addr.sin_addr.s_addr, (char*)server->h_addr, server->h_length);
 }
 
 int NetSocketWorker::GetNewSocketId() {
@@ -25,7 +28,7 @@ int NetSocketWorker::Recieve(int socket_id, char* buff, int size){
 	}
 }
 
-void NetSocketWorker::Send(int socket_id, char* buff, int size){
+void NetSocketWorker::Send(int socket_id, const char* buff, int size){
 	try{
 		send(socket_id, buff, size, IPPROTO_TCP);
 	}catch(...){}

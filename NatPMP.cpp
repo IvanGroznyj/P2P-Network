@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include "NatPMP.h"
 #include "MainInterfaces.h"
 #include "NetSocketWorker.h"

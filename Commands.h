@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include <iostream>
 using namespace std;
 
@@ -6,7 +9,7 @@ enum CommandsIndexes{CmdEcho=1, CmdHi ,CmdHash, CmdGetFile, CmdGetVirtualFile, C
 struct Command{
 	Command();
 	Command(char name);
-	Command(char name, char* arg);
+	Command(char name, const char* arg);
 	char name;
 	int argc;
 	string* argv;
@@ -17,20 +20,20 @@ struct HiCommand: public Command{
 };
 
 struct EchoCommand: public Command{
-	EchoCommand(char* text);
+	EchoCommand(const char* text);
 };
 
 struct HashCommand: public Command{
-	HashCommand(char* path);
+	HashCommand(const char* path);
 };
 
 struct GetFileCommand: public Command{
-	GetFileCommand(char* hash);
+	GetFileCommand(const char* hash);
 };
 
 struct GetVirtualFileCommand: public Command{
-	GetVirtualFileCommand(char* filename);
+	GetVirtualFileCommand(const char* filename);
 };
 struct WriteToVirtualFileCommand: public Command{
-	WriteToVirtualFileCommand(char* filename, char* text);
+	WriteToVirtualFileCommand(const char* filename, const char* text);
 };

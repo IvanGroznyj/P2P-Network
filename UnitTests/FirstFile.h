@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include "../MainInterfaces.h"
 #include "../MyChat.h"
 
@@ -55,7 +58,7 @@ public:
 
 		Translator tr;
 		Command *cmd = new HiCommand();
-		char *txtcmd = tr.CommandToText(cmd);
+		const char *txtcmd = tr.CommandToText(cmd);
 		int len = strlen(txtcmd);
 	    TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "\\('')");
 	 }
@@ -63,7 +66,7 @@ public:
 	{
 		Translator tr;
 		Command *cmd = new EchoCommand("Hello");
-		char *txtcmd = tr.CommandToText(cmd);
+		const char *txtcmd = tr.CommandToText(cmd);
 		int len = strlen(txtcmd);
 	    TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello");
 	}
@@ -73,7 +76,7 @@ public:
 		char *firststr = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 		char *secondstr = "helloworldmyfriends";
 		Command *firstcmd = new EchoCommand(firststr);
-		char *txtcmd = tr.CommandToText(firstcmd);
+		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
 		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), firststr);
 		Command *secondcmd = new EchoCommand(secondstr);
@@ -85,7 +88,7 @@ public:
 	void testCommandHash(){
 		Translator tr;
 		Command *firstcmd = new HashCommand("data/firstfile.txt");
-		char *txtcmd = tr.CommandToText(firstcmd);
+		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
 		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "2309636224852936099");
 	}
@@ -93,7 +96,7 @@ public:
 	void testCommandGetFile(){
 		Translator tr;
 		Command *firstcmd = new GetFileCommand("2309636224852936099");
-		char *txtcmd = tr.CommandToText(firstcmd);
+		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
 		c->StopListen();
 		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello\nIt's me!\nYou found me");

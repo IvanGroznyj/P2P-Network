@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 #include "Translator.h"
 
 class ICommandInterpreter {

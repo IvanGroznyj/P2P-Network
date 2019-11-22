@@ -1,3 +1,6 @@
+/*
+ *  Author: Ivan Khodyrev
+ */
 class NatPMP {
 public:
 	const static int UDP_CODE = 1;

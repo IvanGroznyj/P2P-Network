@@ -5,9 +5,11 @@ DEBUGDIR=Debug
 TESTFILE=UnitTests/FirstFile.h
 FILES=$(wildcard ../*.cpp)
 OBJECTS=$(patsubst ../%.cpp,./%.o,$(wildcard ../*.cpp))
-
 CHATMAINDIR=chat
 CHATMAINFILE=main
+PROJECTNAME=Chat
+BACKUPSDIR=~/Backups
+TIMESTAMP=date +%Y%m%d-%H%M%S
 
 helloWorld :
 	echo $(FILES)
@@ -29,3 +31,6 @@ unittests: $(OBJECTS)
 
 clean:
 	rm -rf *.o $(EXECUTABLE)
+	
+tar:
+	tar --totals -czvf $(BACKUPSDIR)/$(PROJECTNAME)/$(PROJECTNAME)_`$(TIMESTAMP)`.tar.gz ../../$(PROJECTNAME) > $(BACKUPSDIR)/$(PROJECTNAME)/$(PROJECTNAME)_`$(TIMESTAMP)`.log

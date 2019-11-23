@@ -69,7 +69,7 @@ void StandartDataWorker::LoadHashTable(){
 
 		current_file += d->d_name;
 		tmp = to_string(StandartDataWorker::GetHash(current_file.c_str()));
-		StandartDataWorker::hash_table[tmp] = "data/firstfile.txt";
+		StandartDataWorker::hash_table[tmp] = current_file;
 		current_file = "data/";
 	}
 }

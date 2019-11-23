@@ -4,7 +4,6 @@
 #include "MainInterfaces.h"
 #include "StandartCommandInterpreter.h"
 #include "StandartDataWorker.h"
-#include "NetSocketWorker.h"
 #include "MyChat.h"
 #include "StandartBuilder.h"
 #include <cstring>

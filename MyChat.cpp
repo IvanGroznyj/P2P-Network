@@ -18,11 +18,11 @@ ChatMessage::ChatMessage(){
 	ChatMessage::text = "";
 }
 
-ChatMessage::ChatMessage(char *message){
+ChatMessage::ChatMessage(const char *message){
 	ChatMessage::msg_time = "";
 	ChatMessage::name = "";
 	ChatMessage::text = "";
-	char *iterator_ptr = message;
+	const char *iterator_ptr = message;
 	while(*iterator_ptr != ChatMessage::separator && *iterator_ptr != '\0'){
 		ChatMessage::msg_time += *iterator_ptr;
 		iterator_ptr++;
@@ -66,6 +66,8 @@ void MyChat::Run(){
 	MyChat::client = builder->GetClient();
 	MyChat::client->BindClient(MyChat::addr);
 	MyChat::client->StartListen();
+
+	delete builder;
 }
 
 void MyChat::UpdateClientList(){
@@ -104,7 +106,14 @@ void MyChat::UpdateChat(char* chat_name){
 		cmd_interpreter->SetDataWorker(new StandartDataWorker());
 		char *chat_str =  MyChat::ConvertChatToString(new_chat);
 		char *msg_list_str = cmd_interpreter->DoCommand(new WriteToVirtualFileCommand(chat_name, chat_str));
+
+		delete msg_list_str;
+		delete chat_str;
+		delete cmd_interpreter;
 	}
+
+	delete tmp_chat;
+	delete new_chat;
 }
 
 char* MyChat::SendMessageToChat(char* chat_name, char* nickname, char* message){
@@ -117,7 +126,10 @@ char* MyChat::SendMessageToChat(char* chat_name, char* nickname, char* message){
 	msg.name = nickname;
 	msg.text = message;
 
-	const char *cmd_str = cmd_translator.CommandToText(new WriteToVirtualFileCommand(chat_name, (char*)msg.ToString().c_str()));
+	Command *cmd = new WriteToVirtualFileCommand(chat_name, msg.ToString().c_str());
+	const char *cmd_str = cmd_translator.CommandToText(cmd);
+	delete cmd;
+
 	vector<ClientAddr*> *addr_list = MyChat::client->GetNodeAddrsInNetwork();
 	char *result_buffer = "OK";
 	int i=0;
@@ -143,6 +155,9 @@ map<pair<string, string>, string>* MyChat::GetChat(char* chat_name){
 	cmd_interpreter->SetDataWorker(new StandartDataWorker());
 	char *msg_list_str = cmd_interpreter->DoCommand(cmd);
 	map<pair<string, string>, string> *msg_list = ParseChatFromString(msg_list_str);
+
+	delete cmd;
+	delete cmd_interpreter;
 	return msg_list;
 }
 
@@ -154,7 +169,7 @@ map<pair<string, string>, string>* MyChat::ParseChatFromString(char *chat_str){
 	while(*iterator_ptr != '\0'){
 		if(*iterator_ptr=='\n'){
 			sum_buffer+='\n';
-			tmp_msg = new ChatMessage((char*)sum_buffer.c_str());
+			tmp_msg = new ChatMessage(sum_buffer.c_str());
 			(*msg_list)[make_pair(tmp_msg->msg_time, tmp_msg->name)] = tmp_msg->text;
 			delete tmp_msg;
 			sum_buffer = "";

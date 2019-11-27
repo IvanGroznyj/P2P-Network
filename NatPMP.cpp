@@ -33,5 +33,8 @@ void NatPMP::PortForwarding(int code, int internal_port, int external_port, int 
 	int sock = socket(AF_INET, SOCK_DGRAM, 0);
 	sw->ConnectTo(sock, new ClientAddr("192.168.0.1", 5351));
 	sw->Send(sock, (char*)buffer, 12);
+
+	delete[] buffer;
+	delete sw;
 }
 

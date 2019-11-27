@@ -13,9 +13,10 @@ using namespace std;
 #include <cstring>
 
 #define ANSWER_BODY_START_ROW 11
+#define MAIN_SERVER_ADDR "igp2p.000webhostapp.com"
 
 P2PClient::P2PClient(){
-	P2PClient::addr = new ClientAddr((char *)"127.0.0.1", 9091);
+	P2PClient::addr = new ClientAddr("127.0.0.1", 9091);
 	P2PClient::handler = nullptr;
 	P2PClient::sworker = nullptr;
 	P2PClient::dworker = nullptr;
@@ -29,15 +30,18 @@ void P2PClient::BindClient(ClientAddr* addr){
 }
 
 void P2PClient::StartListen(){
-	ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
+	ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
 
 	string request_str = "GET /?cmd=addMe&ip=";
 	request_str+=P2PClient::addr->ip;
 	request_str+="&port=";
 	request_str+=to_string(P2PClient::addr->port);
-	request_str+=" HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
+	request_str+=" HTTP/1.1\r\nHost: ";
+	request_str+=MAIN_SERVER_ADDR;
+	request_str+="\r\n\r\n";
 
 	P2PClient::GetAnswer(addr, request_str.c_str(), request_str.size());
+	delete addr;
 
 	NatPMP::PortForwarding(NatPMP::TCP_CODE, P2PClient::addr->port, P2PClient::addr->port, 3600);
 
@@ -89,10 +93,12 @@ vector<ClientAddr*>* P2PClient::GetNodeAddrsInNetwork(){
 }
 
 void P2PClient::UpdateGlobalTime(){
-	ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
-	char *request_str = "GET /?cmd=getTime HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
+	ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
+	string request_str = "GET /?cmd=getTime HTTP/1.1\r\nHost: ";
+	request_str+=MAIN_SERVER_ADDR;
+	request_str+="\r\n\r\n";
 
-	char *answer_body = P2PClient::GetAnswer(addr, request_str, strlen(request_str));
+	char *answer_body = P2PClient::GetAnswer(addr, request_str.c_str(), request_str.size());
 
 	int current_row_number = 0;
 	string result_str = "";
@@ -107,14 +113,17 @@ void P2PClient::UpdateGlobalTime(){
 	}
 	P2PClient::net_time = new char[result_str.size()+1];
 	strcpy(P2PClient::net_time, result_str.c_str());
+	delete addr;
 }
 
 void P2PClient::UpdateNodeAddrsInNetwork(){
-	ClientAddr *addr = new ClientAddr("igp2p.000webhostapp.com", 80);
-	char *request_str = "GET /?cmd=getAddrs HTTP/1.1\r\nHost: igp2p.000webhostapp.com\r\n\r\n";
+	ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
+	string request_str = "GET /?cmd=getAddrs HTTP/1.1\r\nHost: ";
+	request_str+=MAIN_SERVER_ADDR;
+	request_str+="\r\n\r\n";
 
-	char *answer_body = P2PClient::GetAnswer(addr, request_str, strlen(request_str));
-
+	char *answer_body = P2PClient::GetAnswer(addr, request_str.c_str(), request_str.size());
+	delete addr;
 	P2PClient::addrs->clear();
 	string ip = "";
 	string port = "";

@@ -9,7 +9,7 @@ using namespace std;
 
 struct ChatMessage{
 	ChatMessage();
-	ChatMessage(char *message);
+	ChatMessage(const char *message);
 	string msg_time;
 	string name;
 	string text;

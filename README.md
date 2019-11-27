@@ -9,7 +9,9 @@ My P2P-network. Chat and file transfer.
 `$ make clean`
 - After that, if you want to run unit tests: <br />
 `$ make unittests` <br />
-`$ ./runner`
+`$ cd ..` <br />
+`$ ./Debug/runner`
 - Or if you want to make the simple p2p-chat:  <br />
 `$ make all` <br />
-`$ ./runner <your local ip addres> <port>`
+`$ cd ..` <br />
+`$ ./Debug/runner <your local ip addres> <port>`

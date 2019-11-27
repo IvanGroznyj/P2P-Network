@@ -2,12 +2,14 @@
 My P2P-network. Chat and file transfer.
 
 ## Start & Build
-$ cd Debug <br />
-$ make clean <br />
-If you want to check tests: <br />
-$ make unittests  <br />
-If you want to make the simple p2p-chat:  <br />
-$ make all  <br />
- <br />
-## Start p2p-chat
-$ ./Debug/runner \<your local ip addres\> \<port\>
+- Clone git: <br />
+`git clone https://github.com/IvanGroznyj/P2P-Network.git`
+- Clear build dir: <br />
+`$ cd P2P-Network/Debug/` <br />
+`$ make clean`
+- After that, if you want to run unit tests: <br />
+`$ make unittests` <br />
+`$ ./runner`
+- Or if you want to make the simple p2p-chat:  <br />
+`$ make all` <br />
+`$ ./runner <your local ip addres> <port>`

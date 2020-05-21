@@ -5,7 +5,7 @@ My P2P-network. Chat and file transfer.
 - Clone git: <br />
 `git clone https://github.com/IvanGroznyj/P2P-Network.git`
 - Clear build dir: <br />
-`$ cd P2P-Network/Debug/` <br />
+`$ cd P2P-Network` <br />
 `$ make clean`
 - After that, if you want to run unit tests: <br />
 `$ make unittests` <br />

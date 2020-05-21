@@ -1,8 +1,8 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "MainInterfaces.h"
-#include "StandartDataWorker.h"
+#include "../includes/MainInterfaces.h"
+#include "../includes/StandartDataWorker.h"
 #include <iostream>
 #include <fstream>
 #include <cstring>

@@ -1,7 +1,7 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "Translator.h"
+#include "../includes/Translator.h"
 #include <cstring>
 
 const char* Translator::CommandToText(Command* cmd){

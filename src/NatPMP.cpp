@@ -1,9 +1,9 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "NatPMP.h"
-#include "MainInterfaces.h"
-#include "NetSocketWorker.h"
+#include "../includes/NatPMP.h"
+#include "../includes/MainInterfaces.h"
+#include "../includes/NetSocketWorker.h"
 #include <cstring>
 using namespace std;
 

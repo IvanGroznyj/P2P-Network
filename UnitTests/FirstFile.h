@@ -1,14 +1,14 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "../MainInterfaces.h"
-#include "../MyChat.h"
+#include "../includes/MainInterfaces.h"
+#include "../includes/MyChat.h"
 
-#include "../CommandInterpreter.h"
-#include "../StandartBuilder.h"
-#include "../NetSocketWorker.h"
+#include "../includes/CommandInterpreter.h"
+#include "../includes/StandartBuilder.h"
+#include "../includes/NetSocketWorker.h"
 
-#include "../NatPMP.h"
+#include "../includes/NatPMP.h"
 
 #include <cstring>
 #include <iostream>

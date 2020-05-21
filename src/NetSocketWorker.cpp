@@ -1,8 +1,8 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "MainInterfaces.h"
-#include "NetSocketWorker.h"
+#include "../includes/MainInterfaces.h"
+#include "../includes/NetSocketWorker.h"
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
@@ -38,7 +38,7 @@ bool NetSocketWorker::Bind(int socket_id,  ClientAddr* addr){
 	struct sockaddr_in connection_addr;
 	NetSocketWorker::ConvertAddr(connection_addr, addr);
 	int reuse = 1;
-	setsockopt(socket_id, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse));
+	// setsockopt(socket_id, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse));
 	return bind(socket_id, (struct sockaddr *)&connection_addr, sizeof(connection_addr))<0;
 }
 

@@ -1,8 +1,8 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "MainInterfaces.h"
-#include "StandartCommandInterpreter.h"
+#include "../includes/MainInterfaces.h"
+#include "../includes/StandartCommandInterpreter.h"
 #include <cstring>
 using namespace std;
 

@@ -2,8 +2,8 @@
  *  Author: Ivan Khodyrev
  */
 #include <iostream>
-#include "../MainInterfaces.h"
-#include "../MyChat.h"
+#include "../includes/MainInterfaces.h"
+#include "../includes/MyChat.h"
 #include <unistd.h>
 
 using namespace std;

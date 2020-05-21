@@ -1,11 +1,11 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "MainInterfaces.h"
-#include "StandartCommandInterpreter.h"
-#include "StandartDataWorker.h"
-#include "MyChat.h"
-#include "StandartBuilder.h"
+#include "../includes/MainInterfaces.h"
+#include "../includes/StandartCommandInterpreter.h"
+#include "../includes/StandartDataWorker.h"
+#include "../includes/MyChat.h"
+#include "../includes/StandartBuilder.h"
 #include <cstring>
 #include <algorithm>
 #include <ctime>

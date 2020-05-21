@@ -1,9 +1,9 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "MainInterfaces.h"
-#include "StandartCommandInterpreter.h"
-#include "ThreadRequestsHandler.h"
+#include "../includes/MainInterfaces.h"
+#include "../includes/StandartCommandInterpreter.h"
+#include "../includes/ThreadRequestsHandler.h"
 #include <cstring>
 #include <thread>
 #include <unistd.h>

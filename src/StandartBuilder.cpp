@@ -1,16 +1,16 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "MainInterfaces.h"
+#include "../includes/MainInterfaces.h"
 
-#include "ClientP2P.h"
+#include "../includes/ClientP2P.h"
 
-#include "StandartCommandInterpreter.h"
-#include "NetSocketWorker.h"
-#include "ThreadRequestsHandler.h"
-#include "StandartDataWorker.h"
+#include "../includes/StandartCommandInterpreter.h"
+#include "../includes/NetSocketWorker.h"
+#include "../includes/ThreadRequestsHandler.h"
+#include "../includes/StandartDataWorker.h"
 
-#include "StandartBuilder.h"
+#include "../includes/StandartBuilder.h"
 
 
 void StandartBuilder::BuildRequestsHandler(){

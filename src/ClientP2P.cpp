@@ -6,10 +6,10 @@ using namespace std;
 #include <cstdio>
 #include <iostream>
 #include <unistd.h>
-#include "MainInterfaces.h"
-#include "ClientP2P.h"
-#include "Commands.h"
-#include "NatPMP.h"
+#include "../includes/MainInterfaces.h"
+#include "../includes/ClientP2P.h"
+#include "../includes/Commands.h"
+#include "../includes/NatPMP.h"
 #include <cstring>
 
 #define ANSWER_BODY_START_ROW 11

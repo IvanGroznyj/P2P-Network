@@ -22,7 +22,7 @@ class MyChat {
 private:
 	P2PClient *client;
 	ClientAddr *addr;
-	clock_t last_clock;
+	// clock_t last_clock;
 	void Run();
 	map<pair<string, string>, string>* ParseChatFromString(char *chat_str);
 	char* ConvertChatToString(map<pair<string, string>, string>* chat);

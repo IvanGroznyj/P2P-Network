@@ -1,7 +1,7 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "Commands.h"
+#include "../includes/Commands.h"
 
 Command::Command(){
 	Command::argc = 0;

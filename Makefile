@@ -1,13 +1,38 @@
+OSFLAG:=
+ifeq ($(OS),Windows_NT)
+	OSFLAG += WIN32
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Linux)
+		OSFLAG += LINUX
+	endif
+	ifeq ($(UNAME_S),Darwin)
+		OSFLAG += OSX
+	endif
+endif
+
+
 CC=g++
 CFLAGS=-c -w
-LFLAGS=-pthread -lws2_32
+LFLAGS=-pthread 
+ifeq ($(OSFLAG),WIN32)
+	LFLAGS += -lws2_32
+endif
+
 EXECUTABLE=runner
 TESTFILE=UnitTests/FirstFile.h
+ifeq ($(OSFLAG),WIN32)
+	unit_test_gen = \Tools\cxxtestgen.bat
+else
+	unit_test_gen = cxxtestgen
+endif
+
 
 debug_dir=build
 source_dir=src
-files=$(wildcard ./$(source_dir)/*.cpp)
-objects=$(patsubst ./$(source_dir)/%.cpp, ./$(debug_dir)/%.o, $(files))
+sfext = cpp
+files=$(wildcard ./$(source_dir)/*.$(sfext))
+objects=$(patsubst ./$(source_dir)/%.$(sfext), ./$(debug_dir)/%.o, $(files))
 
 CHATMAINDIR=chat
 CHATMAINFILE=main
@@ -16,21 +41,22 @@ PROJECTNAME=Chat
 BACKUPSDIR=~/Backups
 TIMESTAMP=date +%Y%m%d-%H%M%S
 
-helloWorld:
-	echo $(files)
-	echo $(objects)
+info:
+	@echo $(OSFLAG)
+	@echo $(files)
+	@echo $(objects)	
 
-./$(debug_dir)/%.o: ./$(source_dir)/%.cpp
+./$(debug_dir)/%.o: ./$(source_dir)/%.$(sfext)
 	$(CC) $(CFLAGS) $< -o $@
 
 all: $(objects)
-	$(CC) $(CFLAGS) $(CHATMAINDIR)/$(CHATMAINFILE).cpp -o $(debug_dir)/$(CHATMAINFILE).o
+	$(CC) $(CFLAGS) $(CHATMAINDIR)/$(CHATMAINFILE).$(sfext) -o $(debug_dir)/$(CHATMAINFILE).o
 	$(CC) $(debug_dir)/*.o -o $(debug_dir)/$(EXECUTABLE) $(LFLAGS)
 	
 unittests: $(objects)
-	J:/Tools/cxxtestgen.bat --error-printer -o $(EXECUTABLE).cpp $(TESTFILE)
-	$(CC) $(CFLAGS) -o $(debug_dir)/$(EXECUTABLE).o $(EXECUTABLE).cpp
-# 	rm -rf ./$(EXECUTABLE).cpp
+	$(unit_test_gen) --error-printer -o $(EXECUTABLE).$(sfext) $(TESTFILE)
+	$(CC) $(CFLAGS) -o $(debug_dir)/$(EXECUTABLE).o $(EXECUTABLE).$(sfext)
+	rm -rf $(EXECUTABLE).$(sfext)
 	$(CC) $(debug_dir)/*.o -o $(debug_dir)/$(EXECUTABLE) $(LFLAGS)
 
 clean:

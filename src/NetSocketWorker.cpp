@@ -6,7 +6,6 @@
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
-#include <vector>
 using namespace std;
 
 #ifdef _WIN32
@@ -45,7 +44,11 @@ bool NetSocketWorker::Bind(int socket_id,  ClientAddr* addr){
 	struct sockaddr_in connection_addr;
 	NetSocketWorker::ConvertAddr(connection_addr, addr);
 	const char reuse = 1;
-	setsockopt(socket_id, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+	#ifdef __linux__
+		setsockopt(socket_id, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse));
+	#elif _WIN32
+		setsockopt(socket_id, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+	#endif	
 	return bind(socket_id, (struct sockaddr *)&connection_addr, sizeof(connection_addr))<0;
 }
 

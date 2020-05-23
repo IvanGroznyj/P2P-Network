@@ -90,16 +90,16 @@ public:
 		Command *firstcmd = new HashCommand("data/firstfile.txt");
 		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "3602630051"); // win: 3602630051 linux: 14761523821158082307
+		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "2543331075"); // win: 3602630051 linux: 14761523821158082307
 	}
 
 	void testCommandGetFile(){
 		Translator tr;
-		Command *firstcmd = new GetFileCommand("3602630051"); // win: 3602630051 linux: 14761523821158082307
+		Command *firstcmd = new GetFileCommand("2543331075"); // win: 3602630051 linux: 14761523821158082307
 		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
 		// c->StopListen();
-		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello\nIt's me!\nYou found me\n");
+		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello\r\nIt's me!\r\nYou found me\r\n");
 	}
 
 	void testChatMessage(){
@@ -119,7 +119,7 @@ public:
 		chat->UpdateChat("firstchat");
 		map<pair<string, string>, string> *msgs = chat->GetChat("firstchat");
 		chat->Close();
-		TS_ASSERT_EQUALS((*msgs)[make_pair("2019-10-28_20:08:00","IG")], "hi\n");
+		TS_ASSERT_EQUALS((*msgs)[make_pair("2019-10-28_20:08:00","IG")], "hi\r\n");
 	}
 
 	void testNATPMP(){

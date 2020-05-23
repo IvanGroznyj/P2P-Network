@@ -15,7 +15,7 @@ char* StandartDataWorker::GetFile(const char* hash){
 };
 
 char* StandartDataWorker::GetFileByName(const char *name){
-	ifstream file_in(name);
+	ifstream file_in(name, ios::binary);
 	string buffer_str;
 	string sum_str = "";
 	bool is_row_end = false;
@@ -38,7 +38,7 @@ char* StandartDataWorker::GetFileByName(const char *name){
 }
 
 unsigned long int StandartDataWorker::GetHash(const char* path){
-	ifstream file_in(path);
+	ifstream file_in(path, ios::binary);
 	string buffer_str;
 	string sum_str = "";
 	if(file_in.is_open()){

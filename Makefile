@@ -1,22 +1,22 @@
-OSFLAG:=
 ifeq ($(OS),Windows_NT)
-	OSFLAG += WIN32
+	OSFLAG=WIN32
 else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
-		OSFLAG += LINUX
+		OSFLAG=LINUX
 	endif
 	ifeq ($(UNAME_S),Darwin)
-		OSFLAG += OSX
+		OSFLAG=OSX
 	endif
 endif
 
 
 CC=g++
 CFLAGS=-c -w
-LFLAGS=-pthread 
 ifeq ($(OSFLAG),WIN32)
-	LFLAGS += -lws2_32
+	LFLAGS=-pthread -lws2_32
+else
+	LFLAGS=-pthread 
 endif
 
 EXECUTABLE=runner
@@ -42,9 +42,9 @@ BACKUPSDIR=~/Backups
 TIMESTAMP=date +%Y%m%d-%H%M%S
 
 info:
-	@echo $(OSFLAG)
-	@echo $(files)
-	@echo $(objects)	
+	@echo "$(OSFLAG)"
+	@echo "$(files)"
+	@echo "$(objects)"
 
 ./$(debug_dir)/%.o: ./$(source_dir)/%.$(sfext)
 	$(CC) $(CFLAGS) $< -o $@
@@ -56,7 +56,7 @@ all: $(objects)
 unittests: $(objects)
 	$(unit_test_gen) --error-printer -o $(EXECUTABLE).$(sfext) $(TESTFILE)
 	$(CC) $(CFLAGS) -o $(debug_dir)/$(EXECUTABLE).o $(EXECUTABLE).$(sfext)
-	rm -rf $(EXECUTABLE).$(sfext)
+# 	rm -f $(EXECUTABLE).$(sfext)
 	$(CC) $(debug_dir)/*.o -o $(debug_dir)/$(EXECUTABLE) $(LFLAGS)
 
 clean:

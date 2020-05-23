@@ -8,6 +8,7 @@
 	#include <netdb.h>
 #elif _WIN32
 	#include <winsock2.h>
+	#include <ws2tcpip.h>
 #endif
 
 class NetSocketWorker: public ISocketWorker{

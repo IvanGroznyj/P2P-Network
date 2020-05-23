@@ -6,39 +6,46 @@
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
+#include <vector>
 using namespace std;
+
+#ifdef _WIN32
+	WSADATA wsaData;
+	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+#endif
+
 
 void NetSocketWorker::ConvertAddr(sockaddr_in &output_addr,  ClientAddr* client_addr){
 	output_addr.sin_family = AF_INET;
 	output_addr.sin_port = htons(client_addr->port);
-	struct hostent *server;
-	server = gethostbyname(client_addr->ip);
-	memmove((char*)&output_addr.sin_addr.s_addr, (char*)server->h_addr, server->h_length);
+	#ifdef __linux__
+		struct hostent *server;
+		server = gethostbyname(client_addr->ip);
+		memmove((char*)&output_addr.sin_addr.s_addr, (char*)server->h_addr, server->h_length);
+	#elif _WIN32
+		output_addr.sin_addr.s_addr = inet_addr(client_addr->ip);
+	#endif
 }
 
 int NetSocketWorker::GetNewSocketId() {
-	return socket(AF_INET, SOCK_STREAM, 0);
+	return socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 }
 
 int NetSocketWorker::Recieve(int socket_id, char* buff, int size){
-	try{
-		return recv(socket_id, buff, size, 0);
-	}catch(...){
-		return -1;
-	}
+	return recv(socket_id, buff, size, 0);
 }
 
 void NetSocketWorker::Send(int socket_id, const char* buff, int size){
 	try{
-		send(socket_id, buff, size, IPPROTO_TCP);
+		send(socket_id, buff, size, 0);
 	}catch(...){}
 }
 
 bool NetSocketWorker::Bind(int socket_id,  ClientAddr* addr){
 	struct sockaddr_in connection_addr;
 	NetSocketWorker::ConvertAddr(connection_addr, addr);
-	int reuse = 1;
-	// setsockopt(socket_id, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse));
+	const char reuse = 1;
+	setsockopt(socket_id, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 	return bind(socket_id, (struct sockaddr *)&connection_addr, sizeof(connection_addr))<0;
 }
 

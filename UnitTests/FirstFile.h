@@ -19,7 +19,7 @@
 P2PClient *c;
 StandartBuilder *builder;
 MyChat *chat;
-ClientAddr* main_addr = new ClientAddr("localhost", 9091);
+ClientAddr* main_addr = new ClientAddr("127.0.0.1", 9094);
 
 class MyTest: public CxxTest::TestSuite{
 public:
@@ -54,13 +54,13 @@ public:
 
 		c->BindClient(main_addr);
 		c->StartListen();
-		sleep(1);
-
+		// sleep(1);
 		Translator tr;
 		Command *cmd = new HiCommand();
+		
 		const char *txtcmd = tr.CommandToText(cmd);
 		int len = strlen(txtcmd);
-	    TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "\\('')");
+	    TS_ASSERT_EQUALS(c->GetAnswer(main_addr, txtcmd, len), "\\('')");
 	 }
 	void testCommandEcho()
 	{
@@ -90,17 +90,16 @@ public:
 		Command *firstcmd = new HashCommand("data/firstfile.txt");
 		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "2309636224852936099");
+		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "3602630051"); // win: 3602630051 linux: 2309636224852936099
 	}
 
 	void testCommandGetFile(){
 		Translator tr;
-		Command *firstcmd = new GetFileCommand("2309636224852936099");
+		Command *firstcmd = new GetFileCommand("3602630051"); // win: 3602630051 linux: 2309636224852936099
 		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
-		c->StopListen();
+		// c->StopListen();
 		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello\nIt's me!\nYou found me");
-		sleep(1);
 	}
 
 	void testChatMessage(){
@@ -110,8 +109,7 @@ public:
 	}
 
 	void testChatSendMessage(){
-		chat = new MyChat(new ClientAddr("localhost", 9091));
-		sleep(1);
+		chat = new MyChat(new ClientAddr("127.0.0.1", 9091));
 		chat->UpdateClientList();
 		char* res = chat->SendMessageToChat("firstchat", "mynick", "hello\n");
 		TS_ASSERT_EQUALS(res, "OK");

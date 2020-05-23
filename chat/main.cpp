@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
 				break;
 			}else{
 				msg += '\n';
-				char* res = chat->SendMessageToChat("firstchat", nick, (char*)msg.c_str());
+				cout<<chat->SendMessageToChat("firstchat", nick, (char*)msg.c_str())<<endl;
 			}
 		}
 

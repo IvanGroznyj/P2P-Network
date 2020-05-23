@@ -60,15 +60,16 @@ char* P2PClient::GetAnswer(ClientAddr *addr, const char* msg, int msg_size){
 	P2PClient::sworker->Send(sock, msg, msg_size+1);
 
 	string result_str = "";
-	int bytes_read;
-	char *recieve_buffer = new char[1024];
-	bytes_read = P2PClient::sworker->Recieve(sock, recieve_buffer, 1024);
-	while(bytes_read>0){
+	int bytes_read = 1024;
+	char *recieve_buffer;
+
+	while(bytes_read==1024){
+		recieve_buffer = new char[1024];
+		bytes_read = sworker->Recieve(sock, recieve_buffer, 1024);
 		result_str += recieve_buffer;
 		delete[] recieve_buffer;
-		recieve_buffer = new char[1024];
-		bytes_read = P2PClient::sworker->Recieve(sock, recieve_buffer, 1024);
 	}
+
 	recieve_buffer = new char[result_str.size()+1];
 	strcpy(recieve_buffer, result_str.c_str());
 	return recieve_buffer;
@@ -93,71 +94,75 @@ vector<ClientAddr*>* P2PClient::GetNodeAddrsInNetwork(){
 }
 
 void P2PClient::UpdateGlobalTime(){
-	ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
-	string request_str = "GET /?cmd=getTime HTTP/1.1\r\nHost: ";
-	request_str+=MAIN_SERVER_ADDR;
-	request_str+="\r\n\r\n";
+	P2PClient::net_time = "2019-11-22_21:05:25";
+	// ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
+	// string request_str = "GET /?cmd=getTime HTTP/1.1\r\nHost: ";
+	// request_str+=MAIN_SERVER_ADDR;
+	// request_str+="\r\n\r\n";
 
-	char *answer_body = P2PClient::GetAnswer(addr, request_str.c_str(), request_str.size());
+	// char *answer_body = P2PClient::GetAnswer(addr, request_str.c_str(), request_str.size());
 
-	int current_row_number = 0;
-	string result_str = "";
-	while (*answer_body!='\0'){
-		if(*answer_body=='\n'){
-			current_row_number++;
-		}else{
-			if(current_row_number==ANSWER_BODY_START_ROW) result_str += *answer_body;
-		}
-		if(current_row_number>ANSWER_BODY_START_ROW) break;
-		answer_body++;
-	}
-	P2PClient::net_time = new char[result_str.size()+1];
-	strcpy(P2PClient::net_time, result_str.c_str());
-	delete addr;
+	// int current_row_number = 0;
+	// string result_str = "";
+	// while (*answer_body!='\0'){
+	// 	if(*answer_body=='\n'){
+	// 		current_row_number++;
+	// 	}else{
+	// 		if(current_row_number==ANSWER_BODY_START_ROW) result_str += *answer_body;
+	// 	}
+	// 	if(current_row_number>ANSWER_BODY_START_ROW) break;
+	// 	answer_body++;
+	// }
+	// P2PClient::net_time = new char[result_str.size()+1];
+	// strcpy(P2PClient::net_time, result_str.c_str());
+	// delete addr;
 }
 
 void P2PClient::UpdateNodeAddrsInNetwork(){
-	ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
-	string request_str = "GET /?cmd=getAddrs HTTP/1.1\r\nHost: ";
-	request_str+=MAIN_SERVER_ADDR;
-	request_str+="\r\n\r\n";
-
-	char *answer_body = P2PClient::GetAnswer(addr, request_str.c_str(), request_str.size());
-	delete addr;
 	P2PClient::addrs->clear();
-	string ip = "";
-	string port = "";
-	int current_row_number = 0;
-	char *tmp_buffer;
-	bool is_ip_reading = true;
-	while (*answer_body!='\0'){
-		if(*answer_body=='\n'){
-			current_row_number++;
-			if (current_row_number>=ANSWER_BODY_START_ROW+1) {
-				tmp_buffer = new char[ip.size()+1];
-				strcpy(tmp_buffer, ip.c_str());
-				addr = new ClientAddr(tmp_buffer, atoi(port.c_str()));
-				P2PClient::addrs->push_back(addr);
+	P2PClient::addrs->push_back(new ClientAddr("127.0.0.1", 9094));
+	P2PClient::addrs->push_back(new ClientAddr("127.0.0.1", 9091));
+	// ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
+	// string request_str = "GET /?cmd=getAddrs HTTP/1.1\r\nHost: ";
+	// request_str+=MAIN_SERVER_ADDR;
+	// request_str+="\r\n\r\n";
 
-				is_ip_reading = true;
-				port = "";
-				ip = "";
-			}
-		}else{
-			if(current_row_number>=ANSWER_BODY_START_ROW) {
-				if(*answer_body == '-') {
-					break;
-				}
-				if(*answer_body==':') {
-					is_ip_reading = false;
-				}else
-				if (is_ip_reading){
-					ip += *answer_body;
-				}else{
-					port += *answer_body;
-				}
-			}
-		}
-		answer_body++;
-	}
+	// char *answer_body = P2PClient::GetAnswer(addr, request_str.c_str(), request_str.size());
+	// delete addr;
+
+	// string ip = "";
+	// string port = "";
+	// int current_row_number = 0;
+	// char *tmp_buffer;
+	// bool is_ip_reading = true;
+	// while (*answer_body!='\0'){
+	// 	if(*answer_body=='\n'){
+	// 		current_row_number++;
+	// 		if (current_row_number>=ANSWER_BODY_START_ROW+1) {
+	// 			tmp_buffer = new char[ip.size()+1];
+	// 			strcpy(tmp_buffer, ip.c_str());
+	// 			addr = new ClientAddr(tmp_buffer, atoi(port.c_str()));
+	// 			P2PClient::addrs->push_back(addr);
+
+	// 			is_ip_reading = true;
+	// 			port = "";
+	// 			ip = "";
+	// 		}
+	// 	}else{
+	// 		if(current_row_number>=ANSWER_BODY_START_ROW) {
+	// 			if(*answer_body == '-') {
+	// 				break;
+	// 			}
+	// 			if(*answer_body==':') {
+	// 				is_ip_reading = false;
+	// 			}else
+	// 			if (is_ip_reading){
+	// 				ip += *answer_body;
+	// 			}else{
+	// 				port += *answer_body;
+	// 			}
+	// 		}
+	// 	}
+	// 	answer_body++;
+	// }
 }

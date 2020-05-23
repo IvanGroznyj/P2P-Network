@@ -24,6 +24,7 @@ void ThreadAnswer(ISocketWorker *sworker, int sock_id){
 		sum_buffer += buffer;
 		delete[] buffer;
 	}
+	// cout<<":>"<<sum_buffer<<endl;
 	char *result_buffer = global_cmd_interpeter->DoCommand(cmd_translator.TextToCommand(sum_buffer.c_str()));
 	sworker->Send(sock_id, result_buffer, strlen(result_buffer)+1);
 	sworker->Close(sock_id);

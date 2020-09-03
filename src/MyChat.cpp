@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <ctime>
 #include <iostream>
+#include <sstream>
+
 using namespace std;
 
 ChatMessage::ChatMessage(){
@@ -165,16 +167,17 @@ map<pair<string, string>, string>* MyChat::ParseChatFromString(char *chat_str){
 	map<pair<string, string>, string> *msg_list = new map<pair<string, string>, string>();
 	ChatMessage* tmp_msg;
 	char *iterator_ptr = chat_str;
-	string sum_buffer = "";
+	stringstream sum_buffer;
+	sum_buffer << "";
 	while(*iterator_ptr != '\0'){
 		if(*iterator_ptr=='\n'){
-			sum_buffer+='\n';
-			tmp_msg = new ChatMessage(sum_buffer.c_str());
+			sum_buffer << '\n';
+			tmp_msg = new ChatMessage(sum_buffer.str().c_str());
 			(*msg_list)[make_pair(tmp_msg->msg_time, tmp_msg->name)] = tmp_msg->text;
 			delete tmp_msg;
-			sum_buffer = "";
+			sum_buffer.str("");
 		}else{
-			sum_buffer += *iterator_ptr;
+			sum_buffer << *iterator_ptr;
 		}
 		iterator_ptr++;
 	}
@@ -182,18 +185,19 @@ map<pair<string, string>, string>* MyChat::ParseChatFromString(char *chat_str){
 }
 
 char* MyChat::ConvertChatToString(map<pair<string, string>, string>* chat){
-	string sum_buffer = "";
+	stringstream sum_buffer;
+	sum_buffer << "";
 	ChatMessage *tmp_msg;
 	for(map<pair<string, string>, string>::iterator iter = chat->begin(); iter != chat->end(); iter++){
 		tmp_msg = new ChatMessage();
 		tmp_msg->msg_time = iter->first.first;
 		tmp_msg->name = iter->first.second;
 		tmp_msg->text = iter->second;
-		sum_buffer += tmp_msg->ToString();
+		sum_buffer << tmp_msg->ToString();
 		delete tmp_msg;
 	}
-	char *result_buffer = new char[sum_buffer.size()+1];
-	strcpy(result_buffer, sum_buffer.c_str());
+	char *result_buffer = new char[sum_buffer.str().size()+1];
+	strcpy(result_buffer, sum_buffer.str().c_str());
 	return result_buffer;
 }
 

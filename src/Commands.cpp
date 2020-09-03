@@ -34,3 +34,6 @@ WriteToVirtualFileCommand::WriteToVirtualFileCommand(const char *filename, const
 	Command::argv[0] = filename;
 	Command::argv[1] = text;
 }
+GetAddressesCommand::GetAddressesCommand(){
+	Command::name = CmdGetAddresses;
+}

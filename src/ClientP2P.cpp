@@ -10,6 +10,7 @@
 #include "../includes/NatPMP.h"
 #include <cstring>
 #include <sstream>
+#include <ctime>
 
 using namespace std;
 
@@ -31,19 +32,19 @@ void P2PClient::BindClient(ClientAddr* addr){
 }
 
 void P2PClient::StartListen(){
-	ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
-
-	stringstream request_str;
-	request_str << "GET /?cmd=addMe&ip=";
-	request_str << P2PClient::addr->ip;
-	request_str << "&port=";
-	request_str << to_string(P2PClient::addr->port);
-	request_str << " HTTP/1.1\r\nHost: ";
-	request_str << MAIN_SERVER_ADDR;
-	request_str << "\r\n\r\n";
-
-	P2PClient::GetAnswer(addr, request_str.str(), request_str.size());
-	delete addr;
+//	ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
+//
+//	stringstream request_str;
+//	request_str << "GET /?cmd=addMe&ip=";
+//	request_str << P2PClient::addr->ip;
+//	request_str << "&port=";
+//	request_str << to_string(P2PClient::addr->port);
+//	request_str << " HTTP/1.1\r\nHost: ";
+//	request_str << MAIN_SERVER_ADDR;
+//	request_str << "\r\n\r\n";
+//
+//	P2PClient::GetAnswer(addr, request_str.str().c_str(), request_str.str().size());
+//	delete addr;
 
 	NatPMP::PortForwarding(NatPMP::TCP_CODE, P2PClient::addr->port, P2PClient::addr->port, 3600);
 
@@ -74,7 +75,7 @@ char* P2PClient::GetAnswer(ClientAddr *addr, const char* msg, int msg_size){
 	}
 
 	recieve_buffer = new char[result_str.str().size()+1];
-	strcpy(recieve_buffer, result_str.str());
+	strcpy(recieve_buffer, result_str.str().c_str());
 	return recieve_buffer;
 }
 
@@ -97,75 +98,24 @@ vector<ClientAddr*>* P2PClient::GetNodeAddrsInNetwork(){
 }
 
 void P2PClient::UpdateGlobalTime(){
-	P2PClient::net_time = "2019-11-22_21:05:25";
-	// ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
-	// string request_str = "GET /?cmd=getTime HTTP/1.1\r\nHost: ";
-	// request_str+=MAIN_SERVER_ADDR;
-	// request_str+="\r\n\r\n";
+	time_t now = time(0);
+	tm *gmtm = gmtime(&now);
 
-	// char *answer_body = P2PClient::GetAnswer(addr, request_str.c_str(), request_str.size());
+	stringstream result_time;
+	result_time << 1900 + gmtm->tm_year << "-";
+	result_time << 1 + gmtm->tm_mon << "-";
+	result_time << gmtm->tm_mday << "_";
+	result_time << 1 + gmtm->tm_hour << ":";
+	result_time << 1 + gmtm->tm_min << ":";
+	result_time << 1 + gmtm->tm_sec;
 
-	// int current_row_number = 0;
-	// string result_str = "";
-	// while (*answer_body!='\0'){
-	// 	if(*answer_body=='\n'){
-	// 		current_row_number++;
-	// 	}else{
-	// 		if(current_row_number==ANSWER_BODY_START_ROW) result_str += *answer_body;
-	// 	}
-	// 	if(current_row_number>ANSWER_BODY_START_ROW) break;
-	// 	answer_body++;
-	// }
-	// P2PClient::net_time = new char[result_str.size()+1];
-	// strcpy(P2PClient::net_time, result_str.c_str());
-	// delete addr;
+	P2PClient::net_time = new char[result_time.str().size()+1];
+	strcpy(P2PClient::net_time, result_time.str().c_str());
 }
 
 void P2PClient::UpdateNodeAddrsInNetwork(){
 	P2PClient::addrs->clear();
 	P2PClient::addrs->push_back(new ClientAddr("127.0.0.1", 9094));
 	P2PClient::addrs->push_back(new ClientAddr("127.0.0.1", 9091));
-	// ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
-	// string request_str = "GET /?cmd=getAddrs HTTP/1.1\r\nHost: ";
-	// request_str+=MAIN_SERVER_ADDR;
-	// request_str+="\r\n\r\n";
-
-	// char *answer_body = P2PClient::GetAnswer(addr, request_str.c_str(), request_str.size());
-	// delete addr;
-
-	// string ip = "";
-	// string port = "";
-	// int current_row_number = 0;
-	// char *tmp_buffer;
-	// bool is_ip_reading = true;
-	// while (*answer_body!='\0'){
-	// 	if(*answer_body=='\n'){
-	// 		current_row_number++;
-	// 		if (current_row_number>=ANSWER_BODY_START_ROW+1) {
-	// 			tmp_buffer = new char[ip.size()+1];
-	// 			strcpy(tmp_buffer, ip.c_str());
-	// 			addr = new ClientAddr(tmp_buffer, atoi(port.c_str()));
-	// 			P2PClient::addrs->push_back(addr);
-
-	// 			is_ip_reading = true;
-	// 			port = "";
-	// 			ip = "";
-	// 		}
-	// 	}else{
-	// 		if(current_row_number>=ANSWER_BODY_START_ROW) {
-	// 			if(*answer_body == '-') {
-	// 				break;
-	// 			}
-	// 			if(*answer_body==':') {
-	// 				is_ip_reading = false;
-	// 			}else
-	// 			if (is_ip_reading){
-	// 				ip += *answer_body;
-	// 			}else{
-	// 				port += *answer_body;
-	// 			}
-	// 		}
-	// 	}
-	// 	answer_body++;
-	// }
+	// TODO: add requests for other
 }

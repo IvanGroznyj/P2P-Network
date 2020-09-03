@@ -7,6 +7,11 @@ struct ClientAddr{
 		ClientAddr::ip = ip;
 		ClientAddr::port = port;
 	}
+
+	bool operator==(const ClientAddr& addr) {
+	    return ip == addr.ip && port == addr.port;
+	}
+
 	const char* ip;
 	int port;
 };

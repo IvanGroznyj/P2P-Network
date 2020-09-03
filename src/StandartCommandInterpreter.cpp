@@ -38,6 +38,10 @@ char* StadnartCommandInterpreter::DoCommand(Command *cmd){
 		StadnartCommandInterpreter::data_worker->AppendToFileByName(cmd->argv[0].c_str(), cmd->argv[1].c_str());
 		return "OK";
 	}
+	case CmdGetAddresses:{
+
+		return "";
+	}
 	default:
 		return "Wrong cmd";
 	}

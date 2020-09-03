@@ -52,7 +52,7 @@ all: $(objects)
 unittests: $(objects)
 	$(unit_test_gen) --error-printer -o $(EXECUTABLE).$(sfext) $(TESTFILE)
 	$(CC) $(CFLAGS) -o $(debug_dir)/$(EXECUTABLE).o $(EXECUTABLE).$(sfext)
-# 	rm -f $(EXECUTABLE).$(sfext)
+	rm -rf $(EXECUTABLE).$(sfext)
 	$(CC) $(debug_dir)/*.o -o $(debug_dir)/$(EXECUTABLE) $(LFLAGS)
 
 clean:

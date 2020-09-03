@@ -7,6 +7,9 @@
 #include <fstream>
 #include <cstring>
 #include <dirent.h>
+
+#include <sstream>
+
 using namespace std;
 
 char* StandartDataWorker::GetFile(const char* hash){
@@ -17,21 +20,22 @@ char* StandartDataWorker::GetFile(const char* hash){
 char* StandartDataWorker::GetFileByName(const char *name){
 	ifstream file_in(name, ios::binary);
 	string buffer_str;
-	string sum_str = "";
+	stringstream sum_str;
+	sum_str << "";
 	bool is_row_end = false;
 	if(file_in.is_open()){
 		while(!file_in.eof()){
 			if (is_row_end){
-				sum_str+='\n';
+				sum_str << '\n';
 			}else{
 				is_row_end = true;
 			}
 			getline(file_in,buffer_str);
-			sum_str += buffer_str;
+			sum_str << buffer_str;
 		}
 		file_in.close();
-		char *result_buffer = new char[sum_str.size()+1];
-		strcpy(result_buffer, sum_str.c_str());
+		char *result_buffer = new char[sum_str.str().size()+1];
+		strcpy(result_buffer, sum_str.str().c_str());
 		return result_buffer;
 	}
 	return "File can't open";
@@ -40,14 +44,15 @@ char* StandartDataWorker::GetFileByName(const char *name){
 unsigned long int StandartDataWorker::GetHash(const char* path){
 	ifstream file_in(path, ios::binary);
 	string buffer_str;
-	string sum_str = "";
+	stringstream sum_str;
+	sum_str << "";
 	if(file_in.is_open()){
 		while(!file_in.eof()){
 			getline(file_in,buffer_str);
-			sum_str += buffer_str;
+			sum_str << buffer_str;
 		}
 		file_in.close();
-		return std::hash<string>{}(sum_str);
+		return std::hash<string>{}(sum_str.str());
 	}
 	return -1;
 };
@@ -61,16 +66,17 @@ void StandartDataWorker::LoadHashTable(){
 	dirent *d;
 	dp = opendir("data");
 	string tmp;
-	string current_file = "data/";
+	stringstream current_file;
+	current_file << "data/";
 	while((d = readdir(dp)) != NULL)
 	{
 		if(!strcmp(d->d_name,".") || !strcmp(d->d_name,".."))
 			continue;
 
-		current_file += d->d_name;
-		tmp = to_string(StandartDataWorker::GetHash(current_file.c_str()));
-		StandartDataWorker::hash_table[tmp] = current_file;
-		current_file = "data/";
+		current_file << d->d_name;
+		tmp = to_string(StandartDataWorker::GetHash(current_file.str().c_str()));
+		StandartDataWorker::hash_table[tmp] = current_file.str();
+		current_file.str("data/");
 	}
 }
 

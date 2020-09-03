@@ -23,6 +23,18 @@ ClientAddr* main_addr = new ClientAddr("127.0.0.1", 9094);
 
 class MyTest: public CxxTest::TestSuite{
 public:
+	void testClientAddr(){
+		ClientAddr addr1("127.0.0.1", 9091);
+		ClientAddr addr2("127.0.0.1", 9091);
+		TS_ASSERT_EQUALS(addr1 == addr2, true);
+
+		ClientAddr addr3("127.0.0.1", 9093);
+		TS_ASSERT_EQUALS(addr1 == addr3, false);
+
+		ClientAddr addr4("127.0.0.2", 9091);
+		TS_ASSERT_EQUALS(addr1 == addr4, false);
+	}
+
 	void testTranslator(){
 		Translator tr;
 		char *txtcmd = "a|hello";
@@ -90,12 +102,12 @@ public:
 		Command *firstcmd = new HashCommand("data/firstfile.txt");
 		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "2543331075"); // win: 3602630051 linux: 14761523821158082307
+		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "14761523821158082307"); // win: 2543331075 linux: 14761523821158082307
 	}
 
 	void testCommandGetFile(){
 		Translator tr;
-		Command *firstcmd = new GetFileCommand("2543331075"); // win: 3602630051 linux: 14761523821158082307
+		Command *firstcmd = new GetFileCommand("14761523821158082307"); // win: 2543331075 linux: 14761523821158082307
 		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
 		// c->StopListen();

@@ -8,6 +8,8 @@
 #include <thread>
 #include <unistd.h>
 #include <fstream>
+#include <sstream>
+
 using namespace std;
 
 ICommandInterpreter *global_cmd_interpeter;
@@ -17,15 +19,16 @@ thread *mainThread = nullptr;
 void ThreadAnswer(ISocketWorker *sworker, int sock_id){
 	char *buffer;
 	int bytes_read = 1024;
-	string sum_buffer = "";
+	stringstream sum_buffer;
+	sum_buffer << "";
 	while(bytes_read==1024){
 		buffer = new char[1024];
 		bytes_read = sworker->Recieve(sock_id, buffer, 1024);
-		sum_buffer += buffer;
+		sum_buffer << buffer;
 		delete[] buffer;
 	}
 	// cout<<":>"<<sum_buffer<<endl;
-	char *result_buffer = global_cmd_interpeter->DoCommand(cmd_translator.TextToCommand(sum_buffer.c_str()));
+	char *result_buffer = global_cmd_interpeter->DoCommand(cmd_translator.TextToCommand(sum_buffer.str().c_str()));
 	sworker->Send(sock_id, result_buffer, strlen(result_buffer)+1);
 	sworker->Close(sock_id);
 }

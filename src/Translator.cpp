@@ -3,15 +3,19 @@
  */
 #include "../includes/Translator.h"
 #include <cstring>
+#include <sstream>
+
+using namespace std;
 
 const char* Translator::CommandToText(Command* cmd){
-	string sum_str = "";
-	sum_str += cmd->name;
+	stringstream sum_str;
+	sum_str << "";
+	sum_str << cmd->name;
 	for(int i=0; i < cmd->argc; i++){
-		sum_str += '|'+(cmd->argv)[i];
+		sum_str << '|' << (cmd->argv)[i];
 	}
-	char *result_buffer = new char[sum_str.size()+1];
-	strcpy(result_buffer, sum_str.c_str());
+	char *result_buffer = new char[sum_str.str().size()+1];
+	strcpy(result_buffer, sum_str.str().c_str());
 	return result_buffer;
 }
 

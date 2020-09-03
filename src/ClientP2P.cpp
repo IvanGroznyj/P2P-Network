@@ -1,8 +1,6 @@
 /*
  *  Author: Ivan Khodyrev
  */
-using namespace std;
-
 #include <cstdio>
 #include <iostream>
 #include <unistd.h>
@@ -11,6 +9,9 @@ using namespace std;
 #include "../includes/Commands.h"
 #include "../includes/NatPMP.h"
 #include <cstring>
+#include <sstream>
+
+using namespace std;
 
 #define ANSWER_BODY_START_ROW 11
 #define MAIN_SERVER_ADDR "igp2p.000webhostapp.com"
@@ -32,15 +33,16 @@ void P2PClient::BindClient(ClientAddr* addr){
 void P2PClient::StartListen(){
 	ClientAddr *addr = new ClientAddr(MAIN_SERVER_ADDR, 80);
 
-	string request_str = "GET /?cmd=addMe&ip=";
-	request_str+=P2PClient::addr->ip;
-	request_str+="&port=";
-	request_str+=to_string(P2PClient::addr->port);
-	request_str+=" HTTP/1.1\r\nHost: ";
-	request_str+=MAIN_SERVER_ADDR;
-	request_str+="\r\n\r\n";
+	stringstream request_str;
+	request_str << "GET /?cmd=addMe&ip=";
+	request_str << P2PClient::addr->ip;
+	request_str << "&port=";
+	request_str << to_string(P2PClient::addr->port);
+	request_str << " HTTP/1.1\r\nHost: ";
+	request_str << MAIN_SERVER_ADDR;
+	request_str << "\r\n\r\n";
 
-	P2PClient::GetAnswer(addr, request_str.c_str(), request_str.size());
+	P2PClient::GetAnswer(addr, request_str.str(), request_str.size());
 	delete addr;
 
 	NatPMP::PortForwarding(NatPMP::TCP_CODE, P2PClient::addr->port, P2PClient::addr->port, 3600);
@@ -59,19 +61,20 @@ char* P2PClient::GetAnswer(ClientAddr *addr, const char* msg, int msg_size){
 	if(P2PClient::sworker->ConnectTo(sock, addr)<0) return "connection error";
 	P2PClient::sworker->Send(sock, msg, msg_size+1);
 
-	string result_str = "";
+	stringstream result_str;
+	result_str << "";
 	int bytes_read = 1024;
 	char *recieve_buffer;
 
 	while(bytes_read==1024){
 		recieve_buffer = new char[1024];
 		bytes_read = sworker->Recieve(sock, recieve_buffer, 1024);
-		result_str += recieve_buffer;
+		result_str << recieve_buffer;
 		delete[] recieve_buffer;
 	}
 
-	recieve_buffer = new char[result_str.size()+1];
-	strcpy(recieve_buffer, result_str.c_str());
+	recieve_buffer = new char[result_str.str().size()+1];
+	strcpy(recieve_buffer, result_str.str());
 	return recieve_buffer;
 }
 

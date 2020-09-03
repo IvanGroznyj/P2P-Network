@@ -15,18 +15,14 @@ CC=g++
 CFLAGS=-c -w
 ifeq ($(OSFLAG),WIN32)
 	LFLAGS=-pthread -lws2_32
+    unit_test_gen = \Tools\cxxtestgen.bat
 else
-	LFLAGS=-pthread 
+	LFLAGS=-pthread
+    unit_test_gen = cxxtestgen
 endif
 
 EXECUTABLE=runner
 TESTFILE=UnitTests/FirstFile.h
-ifeq ($(OSFLAG),WIN32)
-	unit_test_gen = \Tools\cxxtestgen.bat
-else
-	unit_test_gen = cxxtestgen
-endif
-
 
 debug_dir=build
 source_dir=src

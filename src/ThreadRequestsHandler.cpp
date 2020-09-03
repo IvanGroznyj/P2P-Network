@@ -59,7 +59,7 @@ void ThreadHandler(ClientAddr* addr, ISocketWorker *socket_worker){
 		if(buffer_str=="stop") break;
 		sock_id = socket_worker->Accept(listener_id);
 		if(sock_id < 0){
-			exit(3);
+			break;
 		}
 		(new thread(ThreadAnswer, socket_worker, sock_id))->detach();
 	}

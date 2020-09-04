@@ -102,12 +102,12 @@ public:
 		Command *firstcmd = new HashCommand("data/firstfile.txt");
 		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "14761523821158082307"); // win: 2543331075 linux: 14761523821158082307
+		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "2543331075"); // win: 2543331075 linux: 14761523821158082307
 	}
 
 	void testCommandGetFile(){
 		Translator tr;
-		Command *firstcmd = new GetFileCommand("14761523821158082307"); // win: 2543331075 linux: 14761523821158082307
+		Command *firstcmd = new GetFileCommand("2543331075"); // win: 2543331075 linux: 14761523821158082307
 		const char *txtcmd = tr.CommandToText(firstcmd);
 		int len = strlen(txtcmd);
 		// c->StopListen();

@@ -27,47 +27,44 @@ EXECUTABLE=runner
 TESTFILE=UnitTests/FirstFile.h
 
 debug_dir=build
-source_dir=src
-sfext = cpp
-files=$(wildcard ./$(source_dir)/*.$(sfext))
-objects=$(patsubst ./$(source_dir)/%.$(sfext), ./$(debug_dir)/lib_obj/%.o, $(files))
+sfext=cpp
 
-CHATMAINDIR=chat
-CHATMAINFILE=main
+includes_dir=-I./core/includes -I./chat/includes
 
-PROJECTNAME=Chat
-BACKUPSDIR=~/Backups
-TIMESTAMP=date +%Y%m%d-%H%M%S
+source_dir=core
+lib_files=$(wildcard ./$(source_dir)/src/*.$(sfext))
+lib_objects=$(patsubst ./$(source_dir)/src/%.$(sfext), ./$(debug_dir)/$(source_dir)/%.o, $(lib_files))
 
-.PHONY: info folders lib chat unittests clean tar
+chat_src_dir=chat
+chat_=main
+chat_files=$(wildcard ./$(chat_src_dir)/src/*.$(sfext))
+chat_objects=$(patsubst ./$(chat_src_dir)/src/%.$(sfext), ./$(debug_dir)/$(chat_src_dir)/%.o, $(chat_files))
+
+.PHONY: info folders lib chat unittests clean
 
 info:
 	@echo "$(OSFLAG)"
-	@echo "$(files)"
-	@echo "$(objects)"
+	@echo "$(lib_files)"
+	@echo "$(lib_objects)"
 
-folders:
-	md $(debug_dir)
-	md $(debug_dir)\\lib_obj
+./$(debug_dir)/$(source_dir)/%.o: ./$(source_dir)/src/%.$(sfext)
+	$(CC) $(CFLAGS) $< -o $@ $(includes_dir)
 
-./$(debug_dir)/lib_obj/%.o: ./$(source_dir)/%.$(sfext)
-	$(CC) $(CFLAGS) $< -o $@
+./$(debug_dir)/$(chat_src_dir)/%.o: ./$(chat_src_dir)/src/%.$(sfext)
+	$(CC) $(CFLAGS) $< -o $@ $(includes_dir)
 
-lib: $(objects)
-	$(CC) $(debug_dir)/lib_obj/*.o -o $(debug_dir)/$(lib_name) $(LFLAGS) -shared
+lib: $(lib_objects)
+	$(CC) $(debug_dir)/$(source_dir)/*.o -o $(debug_dir)/$(lib_name) $(LFLAGS) -shared
 
-chat: lib
-	$(CC) $(CFLAGS) -o $(debug_dir)/$(CHATMAINFILE).o $(CHATMAINDIR)/$(CHATMAINFILE).$(sfext)
+chat: lib $(chat_objects)
 	$(CC) $(debug_dir)/*.o -o $(debug_dir)/$(EXECUTABLE) $(LFLAGS) -L./$(debug_dir) -lcore
 	
 unittests: lib
 	$(unit_test_gen) --error-printer -o $(EXECUTABLE).$(sfext) $(TESTFILE)
-	$(CC) $(CFLAGS) -o $(debug_dir)/$(EXECUTABLE).o $(EXECUTABLE).$(sfext)
+	$(CC) $(CFLAGS) -o $(debug_dir)/$(EXECUTABLE).o $(EXECUTABLE).$(sfext) $(includes_dir)
 	#rm -rf $(EXECUTABLE).$(sfext)
 	$(CC) $(debug_dir)/*.o -o $(debug_dir)/$(EXECUTABLE) $(LFLAGS) -L./$(debug_dir) -lcore
 
 clean:
-	rm -rf $(debug_dir)/*.o $(debug_dir)/$(EXECUTABLE)
+	rm -rf $(debug_dir)/$(lib_objects)/*.o $(debug_dir)/$(chat_src_dir)/*.o $(debug_dir)/$(EXECUTABLE)
 	
-tar:
-	tar --totals -czvf $(BACKUPSDIR)/$(PROJECTNAME)/$(PROJECTNAME)_`$(TIMESTAMP)`.tar.gz ../$(PROJECTNAME) > $(BACKUPSDIR)/$(PROJECTNAME)/$(PROJECTNAME)_`$(TIMESTAMP)`.log

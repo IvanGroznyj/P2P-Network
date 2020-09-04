@@ -1,14 +1,14 @@
 /*
  *  Author: Ivan Khodyrev
  */
-#include "../includes/MainInterfaces.h"
-#include "../includes/MyChat.h"
+#include "MainInterfaces.h"
+#include "MyChat.h"
 
-#include "../includes/CommandInterpreter.h"
-#include "../includes/StandartBuilder.h"
-#include "../includes/NetSocketWorker.h"
+#include "CommandInterpreter.h"
+#include "StandartBuilder.h"
+#include "NetSocketWorker.h"
 
-#include "../includes/NatPMP.h"
+#include "NatPMP.h"
 
 #include <cstring>
 #include <iostream>
@@ -114,25 +114,25 @@ public:
 		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello\r\nIt's me!\r\nYou found me\r\n");
 	}
 
-	void testChatMessage(){
-		char *message = "00:00^Ivan^hello\n";
-		ChatMessage msg(message);
-		TS_ASSERT_EQUALS(msg.ToString().c_str(), message);
-	}
+	// void testChatMessage(){
+	// 	char *message = "00:00^Ivan^hello\n";
+	// 	ChatMessage msg(message);
+	// 	TS_ASSERT_EQUALS(msg.ToString().c_str(), message);
+	// }
 
-	void testChatSendMessage(){
-		chat = new MyChat(new ClientAddr("127.0.0.1", 9091));
-		chat->UpdateClientList();
-		char* res = chat->SendMessageToChat("firstchat", "mynick", "hello\n");
-		TS_ASSERT_EQUALS(res, "OK");
-	}
+	// void testChatSendMessage(){
+	// 	chat = new MyChat(new ClientAddr("127.0.0.1", 9091));
+	// 	chat->UpdateClientList();
+	// 	char* res = chat->SendMessageToChat("firstchat", "mynick", "hello\n");
+	// 	TS_ASSERT_EQUALS(res, "OK");
+	// }
 
-	void testGetChat(){
-		chat->UpdateChat("firstchat");
-		map<pair<string, string>, string> *msgs = chat->GetChat("firstchat");
-		chat->Close();
-		TS_ASSERT_EQUALS((*msgs)[make_pair("2019-10-28_20:08:00","IG")], "hi\r\n");
-	}
+	// void testGetChat(){
+	// 	chat->UpdateChat("firstchat");
+	// 	map<pair<string, string>, string> *msgs = chat->GetChat("firstchat");
+	// 	chat->Close();
+	// 	TS_ASSERT_EQUALS((*msgs)[make_pair("2019-10-28_20:08:00","IG")], "hi\r\n");
+	// }
 
 	void testNATPMP(){
 		NatPMP::PortForwarding(NatPMP::TCP_CODE, 9095, 9095, 3600);

@@ -14,21 +14,24 @@
 	#include <ws2tcpip.h>
 #endif
 
-class NetSocketWorker: public ISocketWorker{
-private:
-	void ConvertAddr(sockaddr_in &addr, ClientAddr* client_addr);
-public:
-	int GetNewSocketId();
-	
-	int Recieve(int socket_id, char* buff, int size);
-	void Send(int socket_id, const char* buff, int size);
-	
-	
-	bool Bind(int socket_id,  ClientAddr* addr);
-	void Listen(int socket_id, int count);
-	int Accept(int socket_id);
-	int ConnectTo(int socket_id,  ClientAddr* addr);
-	void Close(int socket_id);
-};
+namespace P2P_Network{
+
+	class Net_Socket_Worker: public I_Socket_Worker{
+	private:
+		void convert_Addr(sockaddr_in &addr, Client_Addr* client_addr);
+	public:
+		int get_New_Socket_Id();
+		
+		int recieve_buffer(int socket_id, char* buff, int size);
+		void send_buffer(int socket_id, const char* buff, int size);
+		
+		bool bind_socket(int socket_id,  Client_Addr* addr);
+		void listen_sockets(int socket_id, int count);
+		int accept_socket(int socket_id);
+		int connect_To(int socket_id,  Client_Addr* addr);
+		void close_socket(int socket_id);
+	};	
+
+}
 
 #endif

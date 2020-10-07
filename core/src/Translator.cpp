@@ -6,8 +6,9 @@
 #include <sstream>
 
 using namespace std;
+using namespace P2P_Network;
 
-const char* Translator::CommandToText(Command* cmd){
+const char* Translator::command_To_Text(Command* cmd){
 	stringstream sum_str;
 	sum_str << "";
 	sum_str << cmd->name;
@@ -19,7 +20,7 @@ const char* Translator::CommandToText(Command* cmd){
 	return result_buffer;
 }
 
-Command* Translator::TextToCommand(const char* cmd_str){
+Command* Translator::text_To_Command(const char* cmd_str){
 	Command *result_cmd = new Command();
 	const char *passing_ptr = cmd_str;
 	result_cmd->name = cmd_str[0];

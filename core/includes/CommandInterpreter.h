@@ -7,10 +7,14 @@
 
 #include "Translator.h"
 
-class ICommandInterpreter {
-public:
-	virtual void SetDataWorker(IDataWorker *dw)=0;
-	virtual char* DoCommand(Command *cmd)=0;
-};
+namespace P2P_Network{
+
+	class I_Command_Interpreter {
+	public:
+		virtual void set_Data_Worker(I_Data_Worker *dw)=0;
+		virtual char* do_Command(Command *cmd)=0;
+	};
+
+}
 
 #endif

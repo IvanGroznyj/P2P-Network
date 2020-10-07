@@ -7,7 +7,9 @@
 #include <cstring>
 using namespace std;
 
-void NatPMP::PortForwarding(int code, int internal_port, int external_port, int life_time){
+using namespace P2P_Network;
+
+void Nat_PMP::port_Forwarding(int code, int internal_port, int external_port, int life_time){
 	unsigned char ver = 0;
 	unsigned char opcode = code;
 	unsigned short reserved_val = 0;
@@ -29,10 +31,10 @@ void NatPMP::PortForwarding(int code, int internal_port, int external_port, int 
 	buffer[10] = lifetime>>8;
 	buffer[11] = lifetime;
 
-	NetSocketWorker *sw = new NetSocketWorker();
+	Net_Socket_Worker *sw = new Net_Socket_Worker();
 	int sock = socket(AF_INET, SOCK_DGRAM, 0);
-	sw->ConnectTo(sock, new ClientAddr("192.168.0.1", 5351));
-	sw->Send(sock, (char*)buffer, 12);
+	sw->connect_To(sock, new Client_Addr("192.168.0.1", 5351));
+	sw->send_buffer(sock, (char*)buffer, 12);
 
 	delete[] buffer;
 	delete sw;

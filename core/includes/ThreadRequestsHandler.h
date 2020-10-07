@@ -5,19 +5,23 @@
 #ifndef ThreadRequestsHandler_H
 #define ThreadRequestsHandler_H
 
-class ThreadRequestsHandler: public IRequestsHandler{
-private:
-	ISocketWorker *socket_worker;
-	IDataWorker *data_worker;
-	bool is_working = false;
-public:
-	void SetWorkers(ISocketWorker *socket_worker, ICommandInterpreter *cmd_interpeter);
+namespace P2P_Network{
 
-	void StartWorking(ClientAddr* addr);
+	class Thread_Requests_Handler: public I_Requests_Handler{
+	private:
+		I_Socket_Worker *socket_worker;
+		I_Data_Worker *data_worker;
+		bool is_working = false;
+	public:
+		void set_Workers(I_Socket_Worker *socket_worker, I_Command_Interpreter *cmd_interpeter);
 
-	int GetStatus();
+		void start_Working(Client_Addr* addr);
 
-	void StopWorking();
-};
+		int get_Status();
+
+		void stop_Working();
+	};
+
+}
 
 #endif

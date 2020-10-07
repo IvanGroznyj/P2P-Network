@@ -2,10 +2,10 @@
  *  Author: Ivan Khodyrev
  */
 #include "MainInterfaces.h"
-#include "MyChat.h"
 
+#include "Client.h"
 #include "CommandInterpreter.h"
-#include "StandartBuilder.h"
+#include "StandartObjectsFactory.h"
 #include "NetSocketWorker.h"
 
 #include "NatPMP.h"
@@ -16,102 +16,107 @@
 
 #include <cxxtest/TestSuite.h>
 
-P2PClient *c;
-StandartBuilder *builder;
-MyChat *chat;
-ClientAddr* main_addr = new ClientAddr("127.0.0.1", 9094);
+using namespace std;
+using namespace P2P_Network;
+
+Client *c;
+Core_Objects_Factory *factory;
+// MyChat *chat;
+Client_Addr* main_addr = new Client_Addr("127.0.0.1", 9094);
 
 class MyTest: public CxxTest::TestSuite{
 public:
-	void testClientAddr(){
-		ClientAddr addr1("127.0.0.1", 9091);
-		ClientAddr addr2("127.0.0.1", 9091);
-		TS_ASSERT_EQUALS(addr1 == addr2, true);
+	void testClient_Addr(){
+		Client_Addr addr1("127.0.0.1", 9091);
+		Client_Addr addr2("127.0.0.1", 9091);
+		TS_ASSERT_EQUALS(addr1, addr2);
 
-		ClientAddr addr3("127.0.0.1", 9093);
+		Client_Addr addr3("127.0.0.1", 9093);
 		TS_ASSERT_EQUALS(addr1 == addr3, false);
 
-		ClientAddr addr4("127.0.0.2", 9091);
+		Client_Addr addr4("127.0.0.2", 9091);
 		TS_ASSERT_EQUALS(addr1 == addr4, false);
+	}
+
+	void testClient_AddrTranform(){
+		char* addr = "127.0.0.1:9091";
+		Client_Addr addr1(addr);
+		TS_ASSERT_EQUALS(addr1.to_str(), addr);
 	}
 
 	void testTranslator(){
 		Translator tr;
 		char *txtcmd = "a|hello";
-		Command *cmd = tr.TextToCommand(txtcmd);
-		TS_ASSERT_EQUALS(tr.CommandToText(cmd), txtcmd);
+		Command *cmd = tr.text_To_Command(txtcmd);
+		TS_ASSERT_EQUALS(tr.command_To_Text(cmd), txtcmd);
 	}
 
 	void testCommandsTypes(){
 		Translator tr;
-		Command *cmd = new EchoCommand("hello");
-		Command *cmd2 = new Command(CmdEcho, "hello");
-		TS_ASSERT_EQUALS(tr.CommandToText(cmd), tr.CommandToText(cmd2));
-		cmd = new HiCommand();
-		cmd2 = new Command(CmdHi);
-		TS_ASSERT_EQUALS(tr.CommandToText(cmd), tr.CommandToText(cmd2));
-		cmd = new GetFileCommand("123");
-		cmd2 = new Command(CmdGetFile, "123");
-		TS_ASSERT_EQUALS(tr.CommandToText(cmd), tr.CommandToText(cmd2));
+		Command *cmd = new Echo_Command("hello");
+		Command *cmd2 = new Command(Cmd_Echo, "hello");
+		TS_ASSERT_EQUALS(tr.command_To_Text(cmd), tr.command_To_Text(cmd2));
+		cmd = new Hi_Command();
+		cmd2 = new Command(Cmd_Hi);
+		TS_ASSERT_EQUALS(tr.command_To_Text(cmd), tr.command_To_Text(cmd2));
+		cmd = new Get_File_Command("123");
+		cmd2 = new Command(Cmd_Get_File, "123");
+		TS_ASSERT_EQUALS(tr.command_To_Text(cmd), tr.command_To_Text(cmd2));
 	}
 
 	void testCommandHi()
 	{
-		builder = new StandartBuilder();
-		builder->BuildDataWorker();
-		builder->BuildSocketWorker();
-		builder->BuildRequestsHandler();
-
-		c = builder->GetClient();
-
-		c->BindClient(main_addr);
-		c->StartListen();
+		factory = new Standart_Objects_Factory();
+		c = factory->get_Client();
+		c->bind(main_addr);
+		c->start_Listen();
 		sleep(1);
 		Translator tr;
-		Command *cmd = new HiCommand();
+		Command *cmd = new Hi_Command();
 		
-		const char *txtcmd = tr.CommandToText(cmd);
+		const char *txtcmd = tr.command_To_Text(cmd);
 		int len = strlen(txtcmd);
-	    TS_ASSERT_EQUALS(c->GetAnswer(main_addr, txtcmd, len), "\\('')");
-	 }
+	    TS_ASSERT_EQUALS(c->get_Answer(main_addr, txtcmd, len), "\\('')");
+	}
+
 	void testCommandEcho()
 	{
 		Translator tr;
-		Command *cmd = new EchoCommand("Hello");
-		const char *txtcmd = tr.CommandToText(cmd);
+		Command *cmd = new Echo_Command("Hello");
+		const char *txtcmd = tr.command_To_Text(cmd);
 		int len = strlen(txtcmd);
-	    TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello");
+	    TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd, len), "Hello");
 	}
 
 	void testCommandEchoShortAfterLong(){
 		Translator tr;
 		char *firststr = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 		char *secondstr = "helloworldmyfriends";
-		Command *firstcmd = new EchoCommand(firststr);
-		const char *txtcmd = tr.CommandToText(firstcmd);
+		Command *firstcmd = new Echo_Command(firststr);
+		const char *txtcmd = tr.command_To_Text(firstcmd);
 		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), firststr);
-		Command *secondcmd = new EchoCommand(secondstr);
-		txtcmd = tr.CommandToText(secondcmd);
+		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd, len), firststr);
+		Command *secondcmd = new Echo_Command(secondstr);
+		txtcmd = tr.command_To_Text(secondcmd);
 		len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), secondstr);
+		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd, len), secondstr);
 	}
 
 	void testCommandHash(){
 		Translator tr;
-		Command *firstcmd = new HashCommand("data/firstfile.txt");
-		const char *txtcmd = tr.CommandToText(firstcmd);
+		Command *firstcmd = new Hash_Command("data/firstfile.txt");
+		const char *txtcmd = tr.command_To_Text(firstcmd);
 		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "2543331075"); // win: 2543331075 linux: 14761523821158082307
+		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd, len), "2543331075"); // win: 2543331075 linux: 14761523821158082307
 	}
 
 	void testCommandGetFile(){
 		Translator tr;
-		Command *firstcmd = new GetFileCommand("2543331075"); // win: 2543331075 linux: 14761523821158082307
-		const char *txtcmd = tr.CommandToText(firstcmd);
+		Command *firstcmd = new Get_File_Command("2543331075"); // win: 2543331075 linux: 14761523821158082307
+		const char *txtcmd = tr.command_To_Text(firstcmd);
 		int len = strlen(txtcmd);
 		// c->StopListen();
-		TS_ASSERT_EQUALS( c->GetAnswer(main_addr, txtcmd, len), "Hello\r\nIt's me!\r\nYou found me\r\n");
+		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd, len), "Hello\r\nIt's me!\r\nYou found me\r\n");
 	}
 
 	// void testChatMessage(){
@@ -121,7 +126,7 @@ public:
 	// }
 
 	// void testChatSendMessage(){
-	// 	chat = new MyChat(new ClientAddr("127.0.0.1", 9091));
+	// 	chat = new MyChat(new Client_Addr("127.0.0.1", 9091));
 	// 	chat->UpdateClientList();
 	// 	char* res = chat->SendMessageToChat("firstchat", "mynick", "hello\n");
 	// 	TS_ASSERT_EQUALS(res, "OK");
@@ -135,6 +140,6 @@ public:
 	// }
 
 	void testNATPMP(){
-		NatPMP::PortForwarding(NatPMP::TCP_CODE, 9095, 9095, 3600);
+		Nat_PMP::port_Forwarding(Nat_PMP::TCP_CODE, 9095, 9095, 3600);
 	}
 };

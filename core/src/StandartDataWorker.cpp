@@ -11,13 +11,14 @@
 #include <sstream>
 
 using namespace std;
+using namespace P2P_Network;
 
-char* StandartDataWorker::GetFile(const char* hash){
-	string path = StandartDataWorker::hash_table[hash];
-	return StandartDataWorker::GetFileByName(path.c_str());
+char* Standart_Data_Worker::get_File(const char* hash){
+	string path = Standart_Data_Worker::hash_table[hash];
+	return Standart_Data_Worker::get_File_By_Name(path.c_str());
 };
 
-char* StandartDataWorker::GetFileByName(const char *name){
+char* Standart_Data_Worker::get_File_By_Name(const char *name){
 	ifstream file_in(name, ios::binary);
 	string buffer_str;
 	stringstream sum_str;
@@ -41,7 +42,7 @@ char* StandartDataWorker::GetFileByName(const char *name){
 	return "File can't open";
 }
 
-unsigned long int StandartDataWorker::GetHash(const char* path){
+unsigned long int Standart_Data_Worker::get_Hash(const char* path){
 	ifstream file_in(path, ios::binary);
 	string buffer_str;
 	stringstream sum_str;
@@ -57,11 +58,11 @@ unsigned long int StandartDataWorker::GetHash(const char* path){
 	return -1;
 };
 
-char* StandartDataWorker::AddFile(const char* path){
+char* Standart_Data_Worker::add_File(const char* path){
 	return "kek";
 };
 
-void StandartDataWorker::LoadHashTable(){
+void Standart_Data_Worker::load_Hash_Table(){
 	DIR *dp;
 	dirent *d;
 	dp = opendir("data");
@@ -74,13 +75,13 @@ void StandartDataWorker::LoadHashTable(){
 			continue;
 
 		current_file << d->d_name;
-		tmp = to_string(StandartDataWorker::GetHash(current_file.str().c_str()));
-		StandartDataWorker::hash_table[tmp] = current_file.str();
+		tmp = to_string(Standart_Data_Worker::get_Hash(current_file.str().c_str()));
+		Standart_Data_Worker::hash_table[tmp] = current_file.str();
 		current_file.str("data/");
 	}
 }
 
-void StandartDataWorker::AppendToFileByName(const char* name, const char* text){
+void Standart_Data_Worker::append_To_File_By_Name(const char* name, const char* text){
 	ofstream file_out;
 	try{
 		file_out.open(name, ios_base::app);

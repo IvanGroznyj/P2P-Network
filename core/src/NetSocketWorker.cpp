@@ -6,6 +6,7 @@
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
+
 using namespace std;
 
 #ifdef _WIN32
@@ -14,7 +15,7 @@ using namespace std;
 #endif
 
 
-void NetSocketWorker::ConvertAddr(sockaddr_in &output_addr,  ClientAddr* client_addr){
+void P2P_Network::Net_Socket_Worker::convert_Addr(sockaddr_in &output_addr,  Client_Addr* client_addr){
 	output_addr.sin_family = AF_INET;
 	output_addr.sin_port = htons(client_addr->port);
 	#ifdef __linux__
@@ -26,23 +27,23 @@ void NetSocketWorker::ConvertAddr(sockaddr_in &output_addr,  ClientAddr* client_
 	#endif
 }
 
-int NetSocketWorker::GetNewSocketId() {
+int P2P_Network::Net_Socket_Worker::get_New_Socket_Id() {
 	return socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 }
 
-int NetSocketWorker::Recieve(int socket_id, char* buff, int size){
+int P2P_Network::Net_Socket_Worker::recieve_buffer(int socket_id, char* buff, int size){
 	return recv(socket_id, buff, size, 0);
 }
 
-void NetSocketWorker::Send(int socket_id, const char* buff, int size){
+void P2P_Network::Net_Socket_Worker::send_buffer(int socket_id, const char* buff, int size){
 	try{
 		send(socket_id, buff, size, 0);
 	}catch(...){}
 }
 
-bool NetSocketWorker::Bind(int socket_id,  ClientAddr* addr){
+bool P2P_Network::Net_Socket_Worker::bind_socket(int socket_id,  Client_Addr* addr){
 	struct sockaddr_in connection_addr;
-	NetSocketWorker::ConvertAddr(connection_addr, addr);
+	P2P_Network::Net_Socket_Worker::convert_Addr(connection_addr, addr);
 	const char reuse = 1;
 	#ifdef __linux__
 		setsockopt(socket_id, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse));
@@ -52,20 +53,20 @@ bool NetSocketWorker::Bind(int socket_id,  ClientAddr* addr){
 	return bind(socket_id, (struct sockaddr *)&connection_addr, sizeof(connection_addr))<0;
 }
 
-void NetSocketWorker::Listen(int socket_id, int count = 1){
+void P2P_Network::Net_Socket_Worker::listen_sockets(int socket_id, int count = 1){
 	listen(socket_id, count);
 }
 
-int NetSocketWorker::Accept(int socket_id){
+int P2P_Network::Net_Socket_Worker::accept_socket(int socket_id){
 	return accept(socket_id, NULL, NULL);
 }
 
-int NetSocketWorker::ConnectTo(int socket_id,  ClientAddr* addr){
+int P2P_Network::Net_Socket_Worker::connect_To(int socket_id,  Client_Addr* addr){
 	struct sockaddr_in connection_addr;
-	NetSocketWorker::ConvertAddr(connection_addr, addr);
+	P2P_Network::Net_Socket_Worker::convert_Addr(connection_addr, addr);
 	return connect(socket_id, (struct sockaddr *)&connection_addr, sizeof(connection_addr));
 }
 
-void NetSocketWorker::Close(int socket_id){
+void P2P_Network::Net_Socket_Worker::close_socket(int socket_id){
 	close(socket_id);
 }

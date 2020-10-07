@@ -7,12 +7,16 @@
 
 #include "Commands.h"
 
-class Translator {
-private:
-	const static char separator = '|';
-public:
-	const char* CommandToText(Command *cmd);
-	Command* TextToCommand(const char* cmd_str);
-};
+namespace P2P_Network{
 
-#endif Translator_H
+	class Translator {
+	private:
+		const static char separator = '|';
+	public:
+		const char* command_To_Text(Command *cmd);
+		Command* text_To_Command(const char* cmd_str);
+	};
+
+}	
+
+#endif

@@ -30,7 +30,7 @@ namespace P2P_Network{
 		unsigned long int get_Hash(string path);
 		string add_File(string path);
 		string get_File_By_Name(string name);
-		void append_To_File_By_Name(string name, string text);
+		void write_To_File_By_Name(string name, string text, Write_Modes write_mode);
 		void load_Hash_Table();
 	};
 

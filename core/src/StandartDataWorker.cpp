@@ -79,10 +79,17 @@ void Standart_Data_Worker::load_Hash_Table(){
 	}
 }
 
-void Standart_Data_Worker::append_To_File_By_Name(string name, string text){
+void Standart_Data_Worker::write_To_File_By_Name(string name, string text, Write_Modes write_mode){
 	ofstream file_out;
 	try{
-		file_out.open(name, ios_base::app);
+		switch(write_mode){
+			case Append_Mode:
+				file_out.open(name, ios_base::app);
+				break;
+			default:
+				file_out.open(name);
+				break;
+		};		
 		file_out<<text;
 	}catch(...){
 		printf("Can't write to the file");

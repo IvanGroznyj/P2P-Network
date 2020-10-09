@@ -32,7 +32,7 @@ string Stadnart_Command_Interpreter::do_Command(Command *cmd){
 	}
 	case Cmd_Write_To_Virtual_File:{
 		cmd->argv[0] = Stadnart_Command_Interpreter::virtual_dir + cmd->argv[0];
-		Stadnart_Command_Interpreter::data_worker->append_To_File_By_Name(cmd->argv[0], cmd->argv[1]);
+		Stadnart_Command_Interpreter::data_worker->write_To_File_By_Name(cmd->argv[0], cmd->argv[1], Append_Mode);
 		return "OK";
 	}
 	default:

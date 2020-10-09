@@ -12,7 +12,7 @@ endif
 
 
 CC=g++
-CFLAGS=-c -w
+CFLAGS=-c -w -O2
 ifeq ($(OSFLAG),WIN32)
 	LFLAGS=-pthread -lws2_32
     unit_test_gen = \Tools\cxxtestgen.bat
@@ -64,9 +64,9 @@ chat: lib $(chat_objects)
 unittests: lib
 	$(unit_test_gen) --error-printer -o $(EXECUTABLE).$(sfext) $(TESTFILE)
 	$(CC) $(CFLAGS) -o $(debug_dir)/$(EXECUTABLE).o $(EXECUTABLE).$(sfext) $(includes_dir)
-	#$(del_cmd) $(EXECUTABLE).$(sfext)
+	# $(del_cmd) $(EXECUTABLE).$(sfext)
 	$(CC) $(debug_dir)/*.o -o $(debug_dir)/$(EXECUTABLE) $(LFLAGS) -L./$(debug_dir) -lcore
 
 clean:
-	rm $(debug_dir)/$(lib_objects)/*.o $(debug_dir)/$(chat_src_dir)/*.o $(debug_dir)/$(EXECUTABLE)
+	rm $(debug_dir)/$(source_dir)/*.o $(debug_dir)/$(chat_src_dir)/*.o $(debug_dir)/$(EXECUTABLE)
 	

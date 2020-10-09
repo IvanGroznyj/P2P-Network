@@ -36,11 +36,13 @@ namespace P2P_Network{
 		virtual void close_socket(int socket_id)=0;
 	};
 
+	enum Write_Modes{Rewrite_Mode, Append_Mode};
+
 	class I_Data_Worker{
 	public:
 		virtual string get_File(string hash)=0;
 		virtual string get_File_By_Name(string name)=0;
-		virtual void append_To_File_By_Name(string name, string text)=0;
+		virtual void write_To_File_By_Name(string name, string text, Write_Modes write_mode)=0;
 		virtual unsigned long int get_Hash(string path)=0;
 		virtual string add_File(string path)=0;
 	};

@@ -34,11 +34,6 @@ void Client::start_Listen(){
 
 	Client::handler->start_Working(Client::addr);
 	Client::update_Node_Addrs_In_Network();
-
-	string cmd = Add_Me_Command(Client::addr->to_str()).to_str();
-	for(int i=0; i<Client::addrs->size(); i++){
-		Client::get_Answer(Client::addrs->at(i), cmd);
-	}
 };
 
 void Client::stop_Listen(){
@@ -103,7 +98,7 @@ void Client::update_Node_Addrs_In_Network(){
 		string request_cmd = Get_Virtual_File_Command("ips").to_str();
 		Response_Body response = Client::get_Answer(Client::addrs->at(i), request_cmd);
 		if (response != OK){
-			i++;
+			Client::addrs->erase(Client::addrs->begin()+i);
 			continue;
 		}
 		tmp_addrs = get_Clients_From_Str(response.response_text);
@@ -122,6 +117,11 @@ void Client::update_Node_Addrs_In_Network(){
 
 	string request_cmd = Write_To_Virtual_File_Command("ips", addrs_list.str()).to_str();
 	Client::get_Answer(Client::addr, request_cmd);
+
+	string cmd = Add_Me_Command(Client::addr->to_str()).to_str();
+	for(int i=0; i<Client::addrs->size(); i++){
+		Client::get_Answer(Client::addrs->at(i), cmd);
+	}
 }
 
 vector<Client_Addr*>* get_Clients_From_Str(string str){

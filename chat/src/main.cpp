@@ -9,7 +9,7 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-	MyChat *chat = new MyChat(new ClientAddr(argv[1], atoi(argv[2])));
+	MyChat *chat = new MyChat(new Client_Addr(argv[1], atoi(argv[2])));
 	sleep(1);
 	char* nick = new char[256];
 	char* buf = new char[256];
@@ -28,13 +28,13 @@ int main(int argc, char* argv[]){
 				break;
 			}else{
 				msg += '\n';
-				cout<<chat->SendMessageToChat("firstchat", nick, (char*)msg.c_str())<<endl;
+				cout<<chat->SendMessageToChat("firstchat", nick, msg)<<endl;
 			}
 		}
 
 		map<pair<string, string>, string> *msgs = chat->GetChat("firstchat");
 		for(map<pair<string, string>, string>::iterator iter = msgs->begin(); iter != msgs->end(); iter++){
-			cout<<iter->first.second<<": "<<iter->second;
+			cout<<iter->first.second<<": "<<iter->second<<endl;
 		}
 		
 	}

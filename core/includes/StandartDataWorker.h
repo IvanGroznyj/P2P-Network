@@ -8,27 +8,29 @@
 #include <iostream>
 #include <map>
 
+using namespace std;
+
 namespace P2P_Network{
 
 	class Standart_Data_Worker: public I_Data_Worker{
 	private:
 		struct My_Hash
 		{
-		    std::size_t operator()(std::string &data) const noexcept
+		    size_t operator()(string &data) const noexcept
 		    {
-		        std::size_t h1 = std::hash<std::string>{}(data);
+		        size_t h1 = hash<string>{}(data);
 		        return h1;
 		    }
 		};
 
-		std::map<std::string, std::string> hash_table;
+		map<string, string> hash_table;
 
 	public:
-		char* get_File(const char* hash);
-		unsigned long int get_Hash(const char* path);
-		char* add_File(const char* path);
-		char* get_File_By_Name(const char* name);
-		void append_To_File_By_Name(const char* name, const char* text);
+		string get_File(string hash);
+		unsigned long int get_Hash(string path);
+		string add_File(string path);
+		string get_File_By_Name(string name);
+		void append_To_File_By_Name(string name, string text);
 		void load_Hash_Table();
 	};
 

@@ -15,7 +15,9 @@ namespace P2P_Network{
 	struct Command{
 		Command();
 		Command(char name);
-		Command(char name, const char* arg);
+		Command(char name, string arg);
+		Command(string str);
+		string to_str();
 		char name;
 		int argc;
 		string* argv;
@@ -26,23 +28,23 @@ namespace P2P_Network{
 	};
 
 	struct Echo_Command: public Command{
-		Echo_Command(const char* text);
+		Echo_Command(string text);
 	};
 
 	struct Hash_Command: public Command{
-		Hash_Command(const char* path);
+		Hash_Command(string path);
 	};
 
 	struct Get_File_Command: public Command{
-		Get_File_Command(const char* hash);
+		Get_File_Command(string hash);
 	};
 
 	struct Get_Virtual_File_Command: public Command{
-		Get_Virtual_File_Command(const char* filename);
+		Get_Virtual_File_Command(string filename);
 	};
 
 	struct Write_To_Virtual_File_Command: public Command{
-		Write_To_Virtual_File_Command(const char* filename, const char* text);
+		Write_To_Virtual_File_Command(string filename, string text);
 	};
 
 }

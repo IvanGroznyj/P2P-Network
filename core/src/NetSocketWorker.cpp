@@ -6,6 +6,7 @@
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
+#include <sstream>
 
 using namespace std;
 
@@ -23,7 +24,7 @@ void P2P_Network::Net_Socket_Worker::convert_Addr(sockaddr_in &output_addr,  Cli
 		server = gethostbyname(client_addr->ip);
 		memmove((char*)&output_addr.sin_addr.s_addr, (char*)server->h_addr, server->h_length);
 	#elif _WIN32
-		output_addr.sin_addr.s_addr = inet_addr(client_addr->ip);
+		output_addr.sin_addr.s_addr = inet_addr(client_addr->ip.c_str());
 	#endif
 }
 
@@ -31,13 +32,22 @@ int P2P_Network::Net_Socket_Worker::get_New_Socket_Id() {
 	return socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 }
 
-int P2P_Network::Net_Socket_Worker::recieve_buffer(int socket_id, char* buff, int size){
-	return recv(socket_id, buff, size, 0);
+string P2P_Network::Net_Socket_Worker::recieve_buffer(int socket_id){
+	char* buff = new char[1024];
+	stringstream sum_buffer;
+	int n_bytes;
+	do{
+		buff = new char[1024];
+		n_bytes = recv(socket_id, buff, 1024, 0);
+		sum_buffer<<buff;
+		delete[] buff;
+	}while(n_bytes == 1024);
+	return sum_buffer.str();
 }
 
-void P2P_Network::Net_Socket_Worker::send_buffer(int socket_id, const char* buff, int size){
+void P2P_Network::Net_Socket_Worker::send_buffer(int socket_id, string buff){
 	try{
-		send(socket_id, buff, size, 0);
+		send(socket_id, buff.c_str(), buff.size()+1, 0);
 	}catch(...){}
 }
 

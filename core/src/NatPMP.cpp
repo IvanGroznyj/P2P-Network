@@ -34,7 +34,7 @@ void Nat_PMP::port_Forwarding(int code, int internal_port, int external_port, in
 	Net_Socket_Worker *sw = new Net_Socket_Worker();
 	int sock = socket(AF_INET, SOCK_DGRAM, 0);
 	sw->connect_To(sock, new Client_Addr("192.168.0.1", 5351));
-	sw->send_buffer(sock, (char*)buffer, 12);
+	sw->send_buffer(sock, (char*)buffer);
 
 	delete[] buffer;
 	delete sw;

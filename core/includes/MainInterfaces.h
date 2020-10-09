@@ -5,17 +5,20 @@
 #ifndef MainInterfaces_H
 #define MainInterfaces_H
 
+#include <string>
+using namespace std;
+
 namespace P2P_Network{
 
 	struct Client_Addr{
 		Client_Addr();
-		Client_Addr(char* addr);
-		Client_Addr(char* ip, int port);
+		Client_Addr(string addr);
+		Client_Addr(string ip, int port);
 
 		bool operator==(const Client_Addr& addr);
-		char* to_str();
+		string to_str();
 
-		char* ip;
+		string ip;
 		int port;
 	};
 
@@ -23,8 +26,8 @@ namespace P2P_Network{
 	public:
 		virtual int get_New_Socket_Id() =0;
 
-		virtual int recieve_buffer(int socket_id, char* buff, int size)=0;
-		virtual void send_buffer(int socket_id, const char* buff, int size)=0;
+		virtual string recieve_buffer(int socket_id)=0;
+		virtual void send_buffer(int socket_id, string buff)=0;
 
 		virtual bool bind_socket(int socket_id, Client_Addr* addr)=0;
 		virtual void listen_sockets(int socket_id, int count)=0;
@@ -35,11 +38,11 @@ namespace P2P_Network{
 
 	class I_Data_Worker{
 	public:
-		virtual char* get_File(const char* hash)=0;
-		virtual char* get_File_By_Name(const char* name)=0;
-		virtual void append_To_File_By_Name(const char* name, const char* text)=0;
-		virtual unsigned long int get_Hash(const char* path)=0;
-		virtual char* add_File(const char* path)=0;
+		virtual string get_File(string hash)=0;
+		virtual string get_File_By_Name(string name)=0;
+		virtual void append_To_File_By_Name(string name, string text)=0;
+		virtual unsigned long int get_Hash(string path)=0;
+		virtual string add_File(string path)=0;
 	};
 
 	class I_Requests_Handler{

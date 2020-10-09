@@ -13,13 +13,13 @@
 using namespace std;
 using namespace P2P_Network;
 
-char* Standart_Data_Worker::get_File(const char* hash){
+string Standart_Data_Worker::get_File(string hash){
 	string path = Standart_Data_Worker::hash_table[hash];
-	return Standart_Data_Worker::get_File_By_Name(path.c_str());
+	return Standart_Data_Worker::get_File_By_Name(path);
 };
 
-char* Standart_Data_Worker::get_File_By_Name(const char *name){
-	ifstream file_in(name, ios::binary);
+string Standart_Data_Worker::get_File_By_Name(string name){
+	ifstream file_in(name.c_str(), ios::binary);
 	string buffer_str;
 	stringstream sum_str;
 	sum_str << "";
@@ -35,14 +35,12 @@ char* Standart_Data_Worker::get_File_By_Name(const char *name){
 			sum_str << buffer_str;
 		}
 		file_in.close();
-		char *result_buffer = new char[sum_str.str().size()+1];
-		strcpy(result_buffer, sum_str.str().c_str());
-		return result_buffer;
+		return sum_str.str();
 	}
 	return "File can't open";
 }
 
-unsigned long int Standart_Data_Worker::get_Hash(const char* path){
+unsigned long int Standart_Data_Worker::get_Hash(string path){
 	ifstream file_in(path, ios::binary);
 	string buffer_str;
 	stringstream sum_str;
@@ -58,7 +56,7 @@ unsigned long int Standart_Data_Worker::get_Hash(const char* path){
 	return -1;
 };
 
-char* Standart_Data_Worker::add_File(const char* path){
+string Standart_Data_Worker::add_File(string path){
 	return "kek";
 };
 
@@ -81,7 +79,7 @@ void Standart_Data_Worker::load_Hash_Table(){
 	}
 }
 
-void Standart_Data_Worker::append_To_File_By_Name(const char* name, const char* text){
+void Standart_Data_Worker::append_To_File_By_Name(string name, string text){
 	ofstream file_out;
 	try{
 		file_out.open(name, ios_base::app);

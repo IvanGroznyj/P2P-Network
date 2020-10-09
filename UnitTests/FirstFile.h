@@ -21,47 +21,46 @@ using namespace P2P_Network;
 
 Client *c;
 Core_Objects_Factory *factory;
-// MyChat *chat;
-Client_Addr* main_addr = new Client_Addr("127.0.0.1", 9094);
+Client_Addr* main_addr = new Client_Addr("127.0.0.1", 9096);
 
 class MyTest: public CxxTest::TestSuite{
 public:
 	void testClient_Addr(){
 		Client_Addr addr1("127.0.0.1", 9091);
-		Client_Addr addr2("127.0.0.1", 9091);
+		Client_Addr addr2("127.0.0.1:9091");
+		TS_ASSERT_EQUALS(addr1.to_str(), addr2.to_str());
 		TS_ASSERT_EQUALS(addr1, addr2);
 
-		Client_Addr addr3("127.0.0.1", 9093);
-		TS_ASSERT_EQUALS(addr1 == addr3, false);
+		Client_Addr *addr3 = new Client_Addr("127.0.0.1", 9093);
+		TS_ASSERT_EQUALS(addr1 == *addr3, false);
+		TS_ASSERT_EQUALS(Client_Addr("127.0.0.1",9093), *addr3);
 
 		Client_Addr addr4("127.0.0.2", 9091);
 		TS_ASSERT_EQUALS(addr1 == addr4, false);
 	}
 
 	void testClient_AddrTranform(){
-		char* addr = "127.0.0.1:9091";
+		string addr = "127.0.0.1:9091";
 		Client_Addr addr1(addr);
 		TS_ASSERT_EQUALS(addr1.to_str(), addr);
 	}
 
 	void testTranslator(){
-		Translator tr;
-		char *txtcmd = "a|hello";
-		Command *cmd = tr.text_To_Command(txtcmd);
-		TS_ASSERT_EQUALS(tr.command_To_Text(cmd), txtcmd);
+		string txtcmd = "a|hello";
+		Command *cmd = new Command(txtcmd);
+		TS_ASSERT_EQUALS(cmd->to_str(), txtcmd);
 	}
 
 	void testCommandsTypes(){
-		Translator tr;
 		Command *cmd = new Echo_Command("hello");
 		Command *cmd2 = new Command(Cmd_Echo, "hello");
-		TS_ASSERT_EQUALS(tr.command_To_Text(cmd), tr.command_To_Text(cmd2));
+		TS_ASSERT_EQUALS(cmd->to_str(), cmd2->to_str());
 		cmd = new Hi_Command();
 		cmd2 = new Command(Cmd_Hi);
-		TS_ASSERT_EQUALS(tr.command_To_Text(cmd), tr.command_To_Text(cmd2));
+		TS_ASSERT_EQUALS(cmd->to_str(), cmd2->to_str());
 		cmd = new Get_File_Command("123");
 		cmd2 = new Command(Cmd_Get_File, "123");
-		TS_ASSERT_EQUALS(tr.command_To_Text(cmd), tr.command_To_Text(cmd2));
+		TS_ASSERT_EQUALS(cmd->to_str(), cmd2->to_str());
 	}
 
 	void testCommandHi()
@@ -70,53 +69,44 @@ public:
 		c = factory->get_Client();
 		c->bind(main_addr);
 		c->start_Listen();
-		sleep(1);
-		Translator tr;
+
 		Command *cmd = new Hi_Command();
 		
-		const char *txtcmd = tr.command_To_Text(cmd);
-		int len = strlen(txtcmd);
-	    TS_ASSERT_EQUALS(c->get_Answer(main_addr, txtcmd, len), "\\('')");
+		string txtcmd = cmd->to_str();
+	    TS_ASSERT_EQUALS(c->get_Answer(main_addr, txtcmd).response_text, "\\('')");
+	    c->stop_Listen();
 	}
 
 	void testCommandEcho()
 	{
-		Translator tr;
+		c->start_Listen();
 		Command *cmd = new Echo_Command("Hello");
-		const char *txtcmd = tr.command_To_Text(cmd);
-		int len = strlen(txtcmd);
-	    TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd, len), "Hello");
+		string txtcmd = cmd->to_str();
+	    TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd).response_text, "Hello");
 	}
 
 	void testCommandEchoShortAfterLong(){
-		Translator tr;
-		char *firststr = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-		char *secondstr = "helloworldmyfriends";
+		string firststr = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+		string secondstr = "helloworldmyfriends";
 		Command *firstcmd = new Echo_Command(firststr);
-		const char *txtcmd = tr.command_To_Text(firstcmd);
-		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd, len), firststr);
+		string txtcmd = firstcmd->to_str();
+		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd).response_text, firststr);
 		Command *secondcmd = new Echo_Command(secondstr);
-		txtcmd = tr.command_To_Text(secondcmd);
-		len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd, len), secondstr);
+		txtcmd = secondcmd->to_str();
+		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd).response_text, secondstr);
 	}
 
 	void testCommandHash(){
-		Translator tr;
 		Command *firstcmd = new Hash_Command("data/firstfile.txt");
-		const char *txtcmd = tr.command_To_Text(firstcmd);
-		int len = strlen(txtcmd);
-		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd, len), "2543331075"); // win: 2543331075 linux: 14761523821158082307
+		string txtcmd = firstcmd->to_str();
+		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd).response_text, string("2543331075")); // win: 2543331075 linux: 14761523821158082307
 	}
 
 	void testCommandGetFile(){
-		Translator tr;
 		Command *firstcmd = new Get_File_Command("2543331075"); // win: 2543331075 linux: 14761523821158082307
-		const char *txtcmd = tr.command_To_Text(firstcmd);
-		int len = strlen(txtcmd);
-		// c->StopListen();
-		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd, len), "Hello\r\nIt's me!\r\nYou found me\r\n");
+		string txtcmd = firstcmd->to_str();
+		TS_ASSERT_EQUALS( c->get_Answer(main_addr, txtcmd).response_text, "Hello\r\nIt's me!\r\nYou found me\r\n");
+		c->stop_Listen();
 	}
 
 	// void testChatMessage(){

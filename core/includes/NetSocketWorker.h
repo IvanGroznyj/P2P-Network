@@ -14,6 +14,8 @@
 	#include <ws2tcpip.h>
 #endif
 
+#include "MainInterfaces.h"
+
 namespace P2P_Network{
 
 	class Net_Socket_Worker: public I_Socket_Worker{
@@ -22,8 +24,8 @@ namespace P2P_Network{
 	public:
 		int get_New_Socket_Id();
 		
-		int recieve_buffer(int socket_id, char* buff, int size);
-		void send_buffer(int socket_id, const char* buff, int size);
+		string recieve_buffer(int socket_id);
+		void send_buffer(int socket_id, string buff);
 		
 		bool bind_socket(int socket_id,  Client_Addr* addr);
 		void listen_sockets(int socket_id, int count);

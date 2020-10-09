@@ -13,10 +13,10 @@ namespace P2P_Network{
 	private:
 		int sock_id;
 		I_Data_Worker *data_worker;
-		const char* virtual_dir = "virtualdata/";
+		string virtual_dir = "virtualdata/";
 	public:
 		void set_Data_Worker(I_Data_Worker *data_worker);
-		char* do_Command(Command *cmd);
+		string do_Command(Command *cmd);
 	};
 
 }

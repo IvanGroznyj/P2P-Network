@@ -5,38 +5,39 @@
 #ifndef MyChat_H
 #define MyChat_H
 
-#include "ClientP2P.h"
+#include "Client.h"
 #include <vector>
 #include <map>
 
+using namespace P2P_Network;
 using namespace std;
 
 struct ChatMessage{
 	ChatMessage();
-	ChatMessage(const char *message);
+	ChatMessage(string message);
 	string msg_time;
 	string name;
 	string text;
 	string ToString();
 private:
-	const static char separator = '^';
+	const string separator = "^";
 };
 
 class MyChat {
 private:
-	P2PClient *client;
-	ClientAddr *addr;
+	Client *client;
+	Client_Addr *addr;
 	// clock_t last_clock;
 	void Run();
-	map<pair<string, string>, string>* ParseChatFromString(char *chat_str);
-	char* ConvertChatToString(map<pair<string, string>, string>* chat);
+	map<pair<string, string>, string>* ParseChatFromString(string chat_str);
+	string ConvertChatToString(map<pair<string, string>, string>* chat);
 public:
 	MyChat();
-	MyChat(ClientAddr* addr);
+	MyChat(Client_Addr* addr);
 	void UpdateClientList();
-	void UpdateChat(char* chat_name);
-	char* SendMessageToChat(char* chat_name, char* nickname, char* message);
-	map<pair<string, string>, string>* GetChat(char* chat_name);
+	void UpdateChat(string chat_name);
+	string SendMessageToChat(string chat_name, string nickname, string message);
+	map<pair<string, string>, string>* GetChat(string chat_name);
 	void Close();
 };
 

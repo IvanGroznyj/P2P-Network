@@ -9,76 +9,134 @@
 #include <unistd.h>
 #include <fstream>
 #include <sstream>
+#include <queue>
+#include <mutex>
+#include <chrono>  
 
 using namespace std;
 using namespace P2P_Network;
 
-I_Command_Interpreter *global_cmd_interpeter;
-Translator cmd_translator;
-thread *mainThread = nullptr;
+#ifndef N_THREADS
+#define N_THREADS 7
+#endif
 
-void Thread_Answer(I_Socket_Worker *sworker, int sock_id){
-	char *buffer;
-	int bytes_read = 1024;
-	stringstream sum_buffer;
-	sum_buffer << "";
-	while(bytes_read==1024){
-		buffer = new char[1024];
-		bytes_read = sworker->recieve_buffer(sock_id, buffer, 1024);
-		sum_buffer << buffer;
-		delete[] buffer;
+I_Command_Interpreter *global_cmd_interpeter;
+I_Socket_Worker *global_socket_worker;
+
+class Q{
+private:
+	queue<int> q_sockets;
+	mutex g_lock;
+public:
+	Q(){
+		q_sockets = queue<int>();
 	}
-	// cout<<":>"<<sum_buffer<<endl;
-	char *result_buffer = global_cmd_interpeter->do_Command(cmd_translator.text_To_Command(sum_buffer.str().c_str()));
-	sworker->send_buffer(sock_id, result_buffer, strlen(result_buffer)+1);
-	sworker->close_socket(sock_id);
+
+	int get_Next_Socket(){
+		int sock_id;
+
+		lock_guard<mutex> lock(g_lock);
+		if (q_sockets.empty()) {
+			sock_id = -1;
+		}else{
+			sock_id = q_sockets.front();
+			q_sockets.pop();
+		}
+		return sock_id;
+	}
+
+	void add_New_Socket(int sock_id){
+		lock_guard<mutex> lock(g_lock);
+		q_sockets.push(sock_id);
+	}
+};
+
+
+
+void Thread_Answer(bool &is_Workers_Run, Q &q_sockets){
+	int sock_id;
+	while(is_Workers_Run){
+		sock_id = q_sockets.get_Next_Socket();
+		if (sock_id != -1) {
+			global_socket_worker->send_buffer(sock_id, global_cmd_interpeter->do_Command(new Command(global_socket_worker->recieve_buffer(sock_id))));
+			global_socket_worker->close_socket(sock_id);
+		}		
+	}
 }
 
-void Thread_Handler(Client_Addr* addr, I_Socket_Worker *socket_worker){
-	int sock_id, listener_id;
 
-	listener_id = socket_worker->get_New_Socket_Id();
-	if(socket_worker->bind_socket(listener_id, addr)) exit(2);
+void Thread_Handler(Client_Addr	addr, bool &is_Workers_Run, Q &q_sockets){
+	int listener_id = global_socket_worker->get_New_Socket_Id();
+	int sock_id;
+	if(global_socket_worker->bind_socket(listener_id, &addr)) exit(2);
+	global_socket_worker->listen_sockets(listener_id, 0);
 
-	ofstream file_out;
-	try{
-		file_out.open("server_work");
-		file_out<<"start";
-	}catch(...){
-		cout<<"Can't write to server_work";
+	while(is_Workers_Run){
+		sock_id = global_socket_worker->accept_socket(listener_id);
+		if(sock_id < 0){
+			continue;
+		}
+		q_sockets.add_New_Socket(sock_id);
 	}
-	if(file_out.is_open()) file_out.close();
+	global_socket_worker->close_socket(listener_id);
+}
 
-
-	socket_worker->listen_sockets(listener_id, 0);
+void Check_File(thread &th, bool &is_Workers_Run){
 	ifstream file_in;
 	string buffer_str = "";
-	while(1){
+	while(is_Workers_Run){
+		this_thread::sleep_for(chrono::seconds(1));
 		file_in.open("server_work");
 		buffer_str = "";
 		if (file_in.is_open()){
 			getline(file_in, buffer_str);
 			file_in.close();
 		}
-		if(buffer_str=="stop") break;
-		sock_id = socket_worker->accept_socket(listener_id);
-		if(sock_id < 0){
-			break;
+		if(buffer_str[0]=='0') {	
+			is_Workers_Run = false;
+			th.~thread();
+			continue;
 		}
-		(new thread(Thread_Answer, socket_worker, sock_id))->detach();
+		
 	}
-	socket_worker->close_socket(listener_id);
+	cout<<"i'm done too\n";
+}
+
+void Run_Threads(Client_Addr* addr){
+	bool is_Workers_Run = true;
+	Q q_sockets;
+
+	thread *threads = new thread[N_THREADS];
+	threads[0] = thread(Thread_Handler, *addr, ref(is_Workers_Run), ref(q_sockets));
+	threads[1] = thread(Check_File, ref(threads[0]), ref(is_Workers_Run));
+	for(int i=2; i<N_THREADS; i++){
+		threads[i] = thread(Thread_Answer, ref(is_Workers_Run), ref(q_sockets));
+	}
+
+	ofstream file_out;
+	try{
+		file_out.open("server_work");
+		file_out<<"1";
+	}catch(...){
+		cout<<"Can't write to server_work";
+	}
+	if(file_out.is_open()) file_out.close();
+
+	// threads[0].detach();
+	for(int i=0; i<N_THREADS; i++){
+		threads[i].join();
+	}
+	cout<<"work done"<<endl;
 }
 
 void Thread_Requests_Handler::set_Workers(I_Socket_Worker *socket_worker, I_Command_Interpreter *cmd_interpeter){
-	Thread_Requests_Handler::socket_worker = socket_worker;
+	global_socket_worker = socket_worker;
 	global_cmd_interpeter = cmd_interpeter;
 }
 
 void Thread_Requests_Handler::start_Working(Client_Addr* addr){
 	Thread_Requests_Handler::is_working = true;
-	mainThread = new thread(Thread_Handler, addr, Thread_Requests_Handler::socket_worker);
-	mainThread->detach();
+	thread(Run_Threads, addr).detach();
 }
 
 int Thread_Requests_Handler::get_Status(){
@@ -90,7 +148,7 @@ void Thread_Requests_Handler::stop_Working(){
 	ofstream file_out;
 	try{
 		file_out.open("server_work");
-		file_out<<"stop";
+		file_out<<"0";
 	}catch(...){
 		printf("Can't write to server_work");
 	}

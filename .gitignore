@@ -2,3 +2,5 @@ build/
 TODO
 .*/
 .*
+server_work
+runner.cpp

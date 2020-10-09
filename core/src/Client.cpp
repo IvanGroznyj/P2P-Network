@@ -33,8 +33,12 @@ void Client::start_Listen(){
 	Nat_PMP::port_Forwarding(Nat_PMP::TCP_CODE, Client::addr->port, Client::addr->port, 3600);
 
 	Client::handler->start_Working(Client::addr);
-
 	Client::update_Node_Addrs_In_Network();
+
+	string cmd = Add_Me_Command(Client::addr->to_str()).to_str();
+	for(int i=0; i<Client::addrs->size(); i++){
+		Client::get_Answer(Client::addrs->at(i), cmd);
+	}
 };
 
 void Client::stop_Listen(){
@@ -92,7 +96,6 @@ void Client::update_Node_Addrs_In_Network(){
 	Client::addrs->push_back(Client::addr);
 	Client_Addr* tmp_addr;
 
-	vector<Client_Addr*> *new_addrs = new vector<Client_Addr*>();
 	vector<Client_Addr*> *tmp_addrs;
 	int i=0;
 	string tmp_str;
@@ -106,7 +109,6 @@ void Client::update_Node_Addrs_In_Network(){
 		tmp_addrs = get_Clients_From_Str(response.response_text);
 		for(int j=0; j < tmp_addrs->size(); j++){
 			if(!in_Addrs(tmp_addrs->at(j), Client::addrs)){
-				new_addrs->push_back(tmp_addrs->at(j));
 				Client::addrs->push_back(tmp_addrs->at(j));
 			}
 		}		
@@ -114,8 +116,8 @@ void Client::update_Node_Addrs_In_Network(){
 	}
 
 	stringstream addrs_list;
-	for(int i=0; i<new_addrs->size(); i++){
-		addrs_list<<new_addrs->at(i)->to_str()<<"\n";
+	for(int i=0; i<Client::addrs->size(); i++){
+		addrs_list<<Client::addrs->at(i)->to_str()<<"\n";
 	}
 
 	string request_cmd = Write_To_Virtual_File_Command("ips", addrs_list.str()).to_str();
@@ -147,9 +149,7 @@ vector<Client_Addr*>* get_Clients_From_Str(string str){
 }
 
 bool in_Addrs(Client_Addr* addr, vector<Client_Addr*> *addrs){
-	cout<<"===="<<endl;
 	for(int i=0; i<addrs->size(); i++){
-		cout<<addr->to_str() << " - "<< addrs->at(i)->to_str() << " = "<< (*addr == *(addrs->at(i)))<<endl;
 		if(*addr == *(addrs->at(i))) return true;
 	}
 	return false;

@@ -72,7 +72,7 @@ void MyChat::UpdateChat(string chat_name){
 	int i=0;
 	map<pair<string, string>, string>* cur_chat = MyChat::GetChat(chat_name);
 	map<pair<string, string>, string>* tmp_chat;
-	map<pair<string, string>, string>* new_chat = new map<pair<string, string>, string>();
+	// map<pair<string, string>, string>* new_chat = new map<pair<string, string>, string>();
 	while(i < addr_list->size()){
 		Response_Body response = MyChat::client->get_Answer(addr_list->at(i), cmd_str);
 		if (response == OK && response.response_text != "File can't open"){
@@ -81,23 +81,22 @@ void MyChat::UpdateChat(string chat_name){
 			for(map<pair<string, string>, string>::iterator iter = tmp_chat->begin(); iter != tmp_chat->end(); iter++){
 				if(cur_chat->count(iter->first) == 0){
 					(*cur_chat)[iter->first] = iter->second;
-					(*new_chat)[iter->first] = iter->second;
+					// (*new_chat)[iter->first] = iter->second;
 				}
 			}
 		}else{
 			addr_list->erase(addr_list->begin()+i);
 		}
 	}
-	if(new_chat->size()>0){
+	if(cur_chat->size()>0){
 		I_Command_Interpreter* cmd_interpreter = factory->get_Command_Interpreter();
-		string chat_str =  MyChat::ConvertChatToString(new_chat);
+		string chat_str =  MyChat::ConvertChatToString(cur_chat);
 		string msg_list_str = cmd_interpreter->do_Command(new Write_To_Virtual_File_Command(chat_name, chat_str));
 
 		delete cmd_interpreter;
 	}
 
 	delete tmp_chat;
-	delete new_chat;
 }
 
 string MyChat::SendMessageToChat(string chat_name, string nickname, string message){
@@ -109,7 +108,7 @@ string MyChat::SendMessageToChat(string chat_name, string nickname, string messa
 	msg.name = nickname;
 	msg.text = message;
 
-	Command *cmd = new Write_To_Virtual_File_Command(chat_name, msg.ToString());
+	Command *cmd = new Append_To_Virtual_File_Command(chat_name, msg.ToString());
 	string cmd_str = cmd->to_str();
 	delete cmd;
 
@@ -117,7 +116,7 @@ string MyChat::SendMessageToChat(string chat_name, string nickname, string messa
 	string result_buffer = "OK";
 	int i=0;
 	while(i < addr_list->size()){
-		Response_Body response = MyChat::client->get_Answer((*addr_list)[i], cmd_str);
+		Response_Body response = MyChat::client->get_Answer(addr_list->at(i), cmd_str);
 		if (response == OK){
 			i++;
 		}else{

@@ -36,7 +36,7 @@ namespace P2P_Network{
 		virtual void close_socket(int socket_id)=0;
 	};
 
-	enum Write_Modes{Rewrite_Mode, Append_Mode};
+	enum Write_Modes{Rewrite_Mode=1, Append_Mode};
 
 	class I_Data_Worker{
 	public:

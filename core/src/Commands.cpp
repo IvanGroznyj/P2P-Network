@@ -68,10 +68,18 @@ string Command::to_str(){
 Hi_Command::Hi_Command():Command(Cmd_Hi){}
 Echo_Command::Echo_Command(string text):Command(Cmd_Echo, text){}
 Hash_Command::Hash_Command(string path):Command(Cmd_Hash, path){}
+Add_Me_Command::Add_Me_Command(string addr):Command(Cmd_Add_Me, addr){}
 Get_File_Command::Get_File_Command(string hash):Command(Cmd_Get_File, hash){}
 Get_Virtual_File_Command::Get_Virtual_File_Command(string filename):Command(Cmd_Get_Virtual_File, filename){}
 Write_To_Virtual_File_Command::Write_To_Virtual_File_Command(string filename, string text){
 	Command::name = Cmd_Write_To_Virtual_File;
+	Command::argc = 2;
+	Command::argv = new string[2];
+	Command::argv[0] = filename;
+	Command::argv[1] = text;
+}
+Append_To_Virtual_File_Command::Append_To_Virtual_File_Command(string filename, string text){
+	Command::name = Cmd_Append_To_Virtual_File;
 	Command::argc = 2;
 	Command::argv = new string[2];
 	Command::argv[0] = filename;

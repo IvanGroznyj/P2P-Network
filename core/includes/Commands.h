@@ -10,7 +10,7 @@ using namespace std;
 
 namespace P2P_Network{
 
-	enum Commands_Indexes{Cmd_Echo=1, Cmd_Hi ,Cmd_Hash, Cmd_Get_File, Cmd_Get_Virtual_File, Cmd_Write_To_Virtual_File};
+	enum Commands_Indexes{Cmd_Echo=1, Cmd_Hi ,Cmd_Hash, Cmd_Add_Me, Cmd_Get_File, Cmd_Get_Virtual_File, Cmd_Write_To_Virtual_File, Cmd_Append_To_Virtual_File};
 
 	struct Command{
 		Command();
@@ -45,6 +45,14 @@ namespace P2P_Network{
 
 	struct Write_To_Virtual_File_Command: public Command{
 		Write_To_Virtual_File_Command(string filename, string text);
+	};
+
+	struct Append_To_Virtual_File_Command: public Command{
+		Append_To_Virtual_File_Command(string filename, string text);
+	};
+
+	struct Add_Me_Command: public Command{
+		Add_Me_Command(string addr);
 	};
 
 }

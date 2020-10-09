@@ -83,12 +83,15 @@ void Standart_Data_Worker::write_To_File_By_Name(string name, string text, Write
 	ofstream file_out;
 	try{
 		switch(write_mode){
-			case Append_Mode:
+			case Append_Mode:{
 				file_out.open(name, ios_base::app);
 				break;
-			default:
+			}
+				
+			default:{
 				file_out.open(name);
 				break;
+			}				
 		};		
 		file_out<<text;
 	}catch(...){
